@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "345725309478",
+    "project_id": "brainetapp",
+    "storage_bucket": "brainetapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:345725309478:android:43ad25290ce772a8a88ce7",
+        "android_client_info": {
+          "package_name": "com.example.netbrains"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTn2wDqr0YSSolzDc-dQ6BB-p-QxG7i4c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
