@@ -5,6 +5,7 @@ import 'package:netbrains/services/auth/auth_gate.dart';
 import 'package:netbrains/services/database/database_provider.dart';
 import 'package:netbrains/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   // firebase setup
@@ -37,6 +38,16 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const AuthGate(),
       theme: Provider.of<ThemeProvider>(context).themeData,
+      // localization
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('ru', 'RU'),
+      ],
     );
   }
 }
