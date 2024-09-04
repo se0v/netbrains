@@ -65,12 +65,12 @@ class _MyPostTileState extends State<MyPostTile> {
       context: context,
       builder: (context) => MyInputAlertBox(
         textController: _commentController,
-        hintText: "Type a comment..",
+        hintText: "Комментарий",
         onPressed: () async {
           // add post in db
           await _addComment();
         },
-        onPressedText: "Post",
+        onPressedText: "Ввод",
       ),
     );
   }
@@ -113,7 +113,7 @@ class _MyPostTileState extends State<MyPostTile> {
                   // delete message button
                   ListTile(
                     leading: const Icon(Icons.delete),
-                    title: const Text("Delete"),
+                    title: const Text("Удалить"),
                     onTap: () async {
                       // pop option box
                       Navigator.pop(context);
@@ -128,7 +128,7 @@ class _MyPostTileState extends State<MyPostTile> {
                   // report post button
                   ListTile(
                     leading: const Icon(Icons.flag),
-                    title: const Text("Report"),
+                    title: const Text("Пожаловаться"),
                     onTap: () {
                       // pop option box
                       Navigator.pop(context);
@@ -139,7 +139,7 @@ class _MyPostTileState extends State<MyPostTile> {
                   // block user button
                   ListTile(
                     leading: const Icon(Icons.block),
-                    title: const Text("Block User"),
+                    title: const Text("Заблокировать"),
                     onTap: () {
                       // pop option box
                       Navigator.pop(context);
@@ -151,7 +151,7 @@ class _MyPostTileState extends State<MyPostTile> {
                 // cancel button
                 ListTile(
                   leading: const Icon(Icons.cancel),
-                  title: const Text("Cancel"),
+                  title: const Text("Отмена"),
                   onTap: () => Navigator.pop(context),
                 ),
               ],

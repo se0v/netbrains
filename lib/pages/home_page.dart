@@ -44,12 +44,12 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) => MyInputAlertBox(
           textController: _messageController,
-          hintText: "What's on your mind?",
+          hintText: "Что скажете?",
           onPressed: () async {
             // post in db
             await postMessage(_messageController.text);
           },
-          onPressedText: "Post"),
+          onPressedText: "Ввод"),
     );
   }
 
@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
 
       // App Bar
       appBar: AppBar(
-        title: const Text("P U B L I C"),
+        title: const Text("Ф О Р У М"),
         foregroundColor: Theme.of(context).colorScheme.primary,
       ),
 
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
 
         // post list is empty
         const Center(
-            child: Text("Nothing here.."),
+            child: Text("Ничего"),
           )
         :
         // post list is NOT empty

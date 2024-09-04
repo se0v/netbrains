@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               // Welcome back message
               Text(
-                "Welcome back, you've been missed!",
+                "С возвращением!",
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   fontSize: 16,
@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
               // email textfield
               MyTextField(
                 controller: emailController,
-                hintText: "Enter email",
+                hintText: "Почта",
                 obscureText: false,
               ),
               const SizedBox(
@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
               // password textfield
               MyTextField(
                 controller: pwController,
-                hintText: "Enter password",
+                hintText: "Пароль",
                 obscureText: true,
               ),
               const SizedBox(
@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  "Forgot password?",
+                  "Забыли пароль?",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold,
@@ -113,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               // sign in button
               MyButton(
-                text: "Login",
+                text: "Войти",
                 onTap: login,
               ),
               const SizedBox(
@@ -124,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Not a member?",
+                    "Нет аккаунта?",
                     style:
                         TextStyle(color: Theme.of(context).colorScheme.primary),
                   ),
@@ -134,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                   GestureDetector(
                       onTap: widget.onTap,
                       child: Text(
-                        "Register now",
+                        "Зарегистрироваться",
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.bold),

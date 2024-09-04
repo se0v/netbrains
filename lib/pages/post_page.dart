@@ -52,7 +52,7 @@ class _PostPageState extends State<PostPage> {
               // no comments yet..
               Center(
                   child: Text(
-                    "No comments yet..",
+                    "Без комментариев..",
                     style:
                         TextStyle(color: Theme.of(context).colorScheme.primary),
                   ),

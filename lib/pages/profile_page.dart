@@ -57,9 +57,9 @@ class _ProfilePageState extends State<ProfilePage> {
       context: context,
       builder: (context) => MyInputAlertBox(
           textController: bioTextController,
-          hintText: "Edit status..",
+          hintText: "Изменить статус",
           onPressed: saveBio,
-          onPressedText: "Save"),
+          onPressedText: "Сохранить"),
     );
   }
 
@@ -135,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Status",
+                  "Статус",
                   style:
                       TextStyle(color: Theme.of(context).colorScheme.primary),
                 ),
@@ -167,7 +167,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
               // user post is empty
               const Center(
-                  child: Text("No posts yet.."),
+                  child: Text("Ещё нет записей.."),
                 )
               :
               // user post is NOT empty

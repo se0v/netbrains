@@ -31,7 +31,7 @@ class MyCommentTile extends StatelessWidget {
                   // delete comment button
                   ListTile(
                     leading: const Icon(Icons.delete),
-                    title: const Text("Delete"),
+                    title: const Text("Удалить"),
                     onTap: () async {
                       // pop option box
                       Navigator.pop(context);
@@ -48,7 +48,7 @@ class MyCommentTile extends StatelessWidget {
                   // report comment button
                   ListTile(
                     leading: const Icon(Icons.flag),
-                    title: const Text("Report"),
+                    title: const Text("Пожаловаться"),
                     onTap: () {
                       // pop option box
                       Navigator.pop(context);
@@ -59,7 +59,7 @@ class MyCommentTile extends StatelessWidget {
                   // block user button
                   ListTile(
                     leading: const Icon(Icons.block),
-                    title: const Text("Block User"),
+                    title: const Text("Заблокировать"),
                     onTap: () {
                       // pop option box
                       Navigator.pop(context);
@@ -71,7 +71,7 @@ class MyCommentTile extends StatelessWidget {
                 // cancel button
                 ListTile(
                   leading: const Icon(Icons.cancel),
-                  title: const Text("Cancel"),
+                  title: const Text("Отмена"),
                   onTap: () => Navigator.pop(context),
                 ),
               ],

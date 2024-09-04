@@ -15,7 +15,7 @@ class SettingsPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.surface,
         // App Bar
         appBar: AppBar(
-          title: const Text("S E T T I N G S"),
+          title: const Text("Н А С Т Р О Й К И"),
           foregroundColor: Theme.of(context).colorScheme.primary,
         ),
 
@@ -24,7 +24,7 @@ class SettingsPage extends StatelessWidget {
           children: [
             // Dark mode tile
             MySettingsTile(
-              title: "Dark mode",
+              title: "Тёмная тема",
               action: CupertinoSwitch(
                 onChanged: (value) =>
                     Provider.of<ThemeProvider>(context, listen: false)

@@ -58,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
       showDialog(
           context: context,
           builder: (context) => const AlertDialog(
-                title: Text("Passwords dont't match!"),
+                title: Text("Пароли не совпадают!"),
               ));
     }
   }
@@ -88,7 +88,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               // Lets create an acc
               Text(
-                "Let's create an account",
+                "Создать аккаунт",
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   fontSize: 16,
@@ -101,7 +101,7 @@ class _RegisterPageState extends State<RegisterPage> {
               // name textfield
               MyTextField(
                 controller: nameController,
-                hintText: "Enter name",
+                hintText: "Имя",
                 obscureText: false,
               ),
               const SizedBox(
@@ -111,7 +111,7 @@ class _RegisterPageState extends State<RegisterPage> {
               // email textfield
               MyTextField(
                 controller: emailController,
-                hintText: "Enter email",
+                hintText: "Почта",
                 obscureText: false,
               ),
               const SizedBox(
@@ -121,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
               // password textfield
               MyTextField(
                 controller: pwController,
-                hintText: "Enter password (6+ characters)",
+                hintText: "Пароль (6+ символов)",
                 obscureText: true,
               ),
               const SizedBox(
@@ -131,14 +131,14 @@ class _RegisterPageState extends State<RegisterPage> {
               // confirm password textfield
               MyTextField(
                 controller: confirmPwController,
-                hintText: "Confirm password",
+                hintText: "Повторить пароль",
                 obscureText: true,
               ),
               const SizedBox(
                 height: 25,
               ),
               // sign up button
-              MyButton(text: "Register", onTap: register),
+              MyButton(text: "Зарегистрироваться", onTap: register),
               const SizedBox(
                 height: 50,
               ),
@@ -147,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Already a member?",
+                    "Имеется аккаунт?",
                     style:
                         TextStyle(color: Theme.of(context).colorScheme.primary),
                   ),
@@ -159,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   GestureDetector(
                       onTap: widget.onTap,
                       child: Text(
-                        "Login now",
+                        "Войти",
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.bold),

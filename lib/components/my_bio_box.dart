@@ -22,7 +22,7 @@ class MyBioBox extends StatelessWidget {
           borderRadius: BorderRadius.circular(8)),
 
       child: Text(
-        text.isNotEmpty ? text : "Empty bio..",
+        text.isNotEmpty ? text : "О себе..",
         style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
       ),
     );

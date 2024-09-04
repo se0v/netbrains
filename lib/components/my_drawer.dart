@@ -54,7 +54,7 @@ class MyDrawer extends StatelessWidget {
 
               // profile list tile
               MyDrawerTile(
-                title: "P R O F I L E",
+                title: "П Р О Ф И Л Ь",
                 icon: Icons.person,
                 onTap: () {
                   // pop menu drawer
@@ -73,7 +73,7 @@ class MyDrawer extends StatelessWidget {
 
               // home list tile
               MyDrawerTile(
-                title: "P U B L I C",
+                title: "Ф О Р У М",
                 icon: Icons.public,
                 onTap: () {
                   Navigator.pop(context);
@@ -82,7 +82,7 @@ class MyDrawer extends StatelessWidget {
 
               // schedule list tile
               MyDrawerTile(
-                title: "S C H E D U L E",
+                title: "Р А С П И С А Н И Е",
                 icon: Icons.edit_calendar,
                 onTap: () {
                   Navigator.pop(context);
@@ -98,7 +98,7 @@ class MyDrawer extends StatelessWidget {
 
               // settings list tile
               MyDrawerTile(
-                title: "S E T T I N G S",
+                title: "Н А С Т Р О Й К И",
                 icon: Icons.settings,
                 onTap: () {
                   // pop menu drawer
@@ -115,7 +115,7 @@ class MyDrawer extends StatelessWidget {
               const Spacer(),
               // logout list tile
               MyDrawerTile(
-                  title: "L O G O U T", icon: Icons.logout, onTap: logout)
+                  title: "В Ы Х О Д", icon: Icons.logout, onTap: logout)
             ],
           ),
         ),

@@ -70,7 +70,7 @@ class MyInputAlertBox extends StatelessWidget {
             // clear controller
             textController.clear();
           },
-          child: const Text("Cancel"),
+          child: const Text("Отмена"),
         ),
 
         // yes button
