@@ -14,6 +14,7 @@ import 'package:netbrains/models/comment.dart';
 import 'package:netbrains/models/post.dart';
 import 'package:netbrains/models/user.dart';
 import 'package:netbrains/services/auth/auth_service.dart';
+import 'package:intl/intl.dart';
 
 class DatabaseService {
   // get instance of firebase db & auth
@@ -219,4 +220,44 @@ class DatabaseService {
   SEARCH
   
   */
+
+  /*
+  
+  SHEDULE MARKS
+  
+  */
+
+  // Add event
+  Future<void> addEvent(
+      DateTime selectedDate, String title, String description) async {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+
+    await _db.collection('events').doc(formattedDate).set(
+        {
+          'events': FieldValue.arrayUnion([
+            {
+              "eventTitle": title,
+              "eventDescp": description,
+            }
+          ])
+        },
+        SetOptions(
+            merge:
+                true)); // SetOptions позволяет не перезаписывать весь документ
+  }
+
+  Stream<List<Map<String, dynamic>>> getEventsForDay(DateTime selectedDate) {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+    return _db
+        .collection('events')
+        .doc(formattedDate)
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.exists) {
+        List events = snapshot.data()!['events'];
+        return List<Map<String, dynamic>>.from(events);
+      }
+      return [];
+    });
+  }
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:netbrains/services/database/database_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class SchedulePage extends StatefulWidget {
@@ -56,27 +57,18 @@ class _SchedulePageState extends State<SchedulePage> {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text(
-          'Написать комментарий',
-          textAlign: TextAlign.center,
-        ),
+        title: const Text('Написать комментарий', textAlign: TextAlign.center),
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: titleController,
-              textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(
-                hintText: "Заголовок",
-              ),
+              decoration: const InputDecoration(hintText: "Заголовок"),
             ),
             TextField(
               controller: descpController,
-              textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(
-                hintText: "Текст",
-              ),
+              decoration: const InputDecoration(hintText: "Текст"),
             ),
           ],
         ),
@@ -87,7 +79,7 @@ class _SchedulePageState extends State<SchedulePage> {
           ),
           TextButton(
             child: const Text('Ввод'),
-            onPressed: () {
+            onPressed: () async {
               if (titleController.text.isEmpty &&
                   descpController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -97,35 +89,15 @@ class _SchedulePageState extends State<SchedulePage> {
                   ),
                 );
                 return;
-              } else {
-                setState(() {
-                  if (mySelectedEvents[
-                          DateFormat('yyyy-MM-dd').format(_selectedDate!)] !=
-                      null) {
-                    mySelectedEvents[
-                            DateFormat('yyyy-MM-dd').format(_selectedDate!)]
-                        ?.add({
-                      "eventTitle": titleController.text,
-                      "eventDescp": descpController.text,
-                    });
-                  } else {
-                    mySelectedEvents[
-                        DateFormat('yyyy-MM-dd').format(_selectedDate!)] = [
-                      {
-                        "eventTitle": titleController.text,
-                        "eventDescp": descpController.text,
-                      }
-                    ];
-                  }
-                });
-
-                print(
-                    "New Event for backend developer ${json.encode(mySelectedEvents)}");
-                titleController.clear();
-                descpController.clear();
-                Navigator.pop(context);
-                return;
               }
+
+              // Добавляем событие в Firestore
+              await DatabaseService().addEvent(
+                  _selectedDate!, titleController.text, descpController.text);
+
+              titleController.clear();
+              descpController.clear();
+              Navigator.pop(context);
             },
           ),
         ],
@@ -136,21 +108,10 @@ class _SchedulePageState extends State<SchedulePage> {
   // BUILD UI
   @override
   Widget build(BuildContext context) {
-    // SCAFFOLD
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      // App Bar
       appBar: AppBar(
         title: const Text("Р А С П И С А Н И Е"),
-        foregroundColor: Theme.of(context).colorScheme.primary,
       ),
-      // Body
-      // body: Center(
-      //   child: Text(
-      //     "Coming soon..",
-      //     style: TextStyle(color: Theme.of(context).colorScheme.primary),
-      //   ),
-      // ),
       body: Column(
         children: [
           TableCalendar(
@@ -160,48 +121,44 @@ class _SchedulePageState extends State<SchedulePage> {
             lastDay: DateTime(2025),
             calendarFormat: _calendarFormat,
             onDaySelected: (selectedDay, focusedDay) {
-              if (!isSameDay(_selectedDate, selectedDay)) {
-                // Call setState when updating the selected day
-                setState(() {
-                  _selectedDate = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-              }
+              setState(() {
+                _selectedDate = selectedDay;
+                _focusedDay = focusedDay;
+              });
             },
             selectedDayPredicate: (day) {
               return isSameDay(_selectedDate, day);
             },
-            onFormatChanged: (format) {
-              if (_calendarFormat != format) {
-                setState(() {
-                  _calendarFormat = format;
-                });
-              }
-            },
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
-            eventLoader: _listOfDayEvents,
           ),
-          ..._listOfDayEvents(_selectedDate!).map(
-            (myEvents) => ListTile(
-              leading: const Icon(
-                Icons.done,
-                color: Colors.teal,
-              ),
-              title: Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                  '${myEvents['eventTitle']}',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              subtitle: Text('${myEvents['eventDescp']}'),
+          Expanded(
+            child: StreamBuilder<List<Map<String, dynamic>>>(
+              stream: DatabaseService().getEventsForDay(_selectedDate!),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text('Ошибка загрузки данных'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('Нет событий'));
+                }
+
+                var events = snapshot.data!;
+                return ListView.builder(
+                  itemCount: events.length,
+                  itemBuilder: (context, index) {
+                    var event = events[index];
+                    return ListTile(
+                      leading: const Icon(Icons.notes_rounded),
+                      title: Text(event['eventTitle']),
+                      subtitle: Text(event['eventDescp']),
+                    );
+                  },
+                );
+              },
             ),
           ),
         ],
       ),
-
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddEventDialog(),
         label: const Text('Комментировать'),
