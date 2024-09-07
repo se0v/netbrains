@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:netbrains/firebase_options.dart';
 import 'package:netbrains/services/auth/auth_gate.dart';
 import 'package:netbrains/services/database/database_provider.dart';
@@ -10,6 +11,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() async {
   // firebase setup
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Установка предпочтений ориентации
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // create instance ThemeProvider and load save theme

@@ -1,8 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+import '../services/database/database_service.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -15,43 +15,42 @@ class _SchedulePageState extends State<SchedulePage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDate;
-
-  Map<String, List> mySelectedEvents = {};
+  Map<String, List<Map<String, dynamic>>> mySelectedEvents = {};
 
   final titleController = TextEditingController();
   final descpController = TextEditingController();
+  final databaseService =
+      DatabaseService(); // Инициализация сервиса базы данных
 
   @override
   void initState() {
     super.initState();
     _selectedDate = _focusedDay;
-
-    loadPreviousEvents();
+    loadMonthEvents(_focusedDay);
   }
 
-  loadPreviousEvents() {
-    mySelectedEvents = {
-      "2024-09-02": [
-        {"eventDescp": "11", "eventTitle": "111"},
-        {"eventDescp": "22", "eventTitle": "22"}
-      ],
-      "2024-08-31": [
-        {"eventDescp": "22", "eventTitle": "22"}
-      ],
-      "2024-09-20": [
-        {"eventTitle": "ss", "eventDescp": "ss"}
-      ]
-    };
-  }
+  // Загрузка предыдущих событий из Firestore
+  loadMonthEvents(DateTime focusedDay) async {
+    final firstDayOfMonth = DateTime(focusedDay.year, focusedDay.month, 1);
+    final lastDayOfMonth = DateTime(focusedDay.year, focusedDay.month + 1, 0);
 
-  List _listOfDayEvents(DateTime dateTime) {
-    if (mySelectedEvents[DateFormat('yyyy-MM-dd').format(dateTime)] != null) {
-      return mySelectedEvents[DateFormat('yyyy-MM-dd').format(dateTime)]!;
-    } else {
-      return [];
+    for (var day = firstDayOfMonth;
+        day.isBefore(lastDayOfMonth.add(const Duration(days: 1)));
+        day = day.add(const Duration(days: 1))) {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(day);
+      List<Map<String, dynamic>> events =
+          await databaseService.getEvents(formattedDate);
+
+      if (mounted) {
+        // Обновляем состояние только если виджет все еще смонтирован
+        setState(() {
+          mySelectedEvents[formattedDate] = events;
+        });
+      }
     }
   }
 
+  // Сохранение нового события в Firestore
   _showAddEventDialog() async {
     await showDialog(
       context: context,
@@ -87,7 +86,7 @@ class _SchedulePageState extends State<SchedulePage> {
           ),
           TextButton(
             child: const Text('Ввод'),
-            onPressed: () {
+            onPressed: () async {
               if (titleController.text.isEmpty &&
                   descpController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -98,29 +97,26 @@ class _SchedulePageState extends State<SchedulePage> {
                 );
                 return;
               } else {
+                final newEvent = {
+                  "eventTitle": titleController.text,
+                  "eventDescp": descpController.text,
+                };
+
+                String formattedDate =
+                    DateFormat('yyyy-MM-dd').format(_selectedDate!);
+
+                // Сохранение события в Firestore
+                await databaseService.saveEvent(formattedDate, newEvent);
+
+                // Обновление состояния
                 setState(() {
-                  if (mySelectedEvents[
-                          DateFormat('yyyy-MM-dd').format(_selectedDate!)] !=
-                      null) {
-                    mySelectedEvents[
-                            DateFormat('yyyy-MM-dd').format(_selectedDate!)]
-                        ?.add({
-                      "eventTitle": titleController.text,
-                      "eventDescp": descpController.text,
-                    });
+                  if (mySelectedEvents[formattedDate] != null) {
+                    mySelectedEvents[formattedDate]!.add(newEvent);
                   } else {
-                    mySelectedEvents[
-                        DateFormat('yyyy-MM-dd').format(_selectedDate!)] = [
-                      {
-                        "eventTitle": titleController.text,
-                        "eventDescp": descpController.text,
-                      }
-                    ];
+                    mySelectedEvents[formattedDate] = [newEvent];
                   }
                 });
 
-                print(
-                    "New Event for backend developer ${json.encode(mySelectedEvents)}");
                 titleController.clear();
                 descpController.clear();
                 Navigator.pop(context);
@@ -133,24 +129,19 @@ class _SchedulePageState extends State<SchedulePage> {
     );
   }
 
-  // BUILD UI
+  List<Map<String, dynamic>> _listOfDayEvents(DateTime dateTime) {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+    return mySelectedEvents[formattedDate] ?? [];
+  }
+
   @override
   Widget build(BuildContext context) {
-    // SCAFFOLD
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      // App Bar
       appBar: AppBar(
         title: const Text("Р А С П И С А Н И Е"),
         foregroundColor: Theme.of(context).colorScheme.primary,
       ),
-      // Body
-      // body: Center(
-      //   child: Text(
-      //     "Coming soon..",
-      //     style: TextStyle(color: Theme.of(context).colorScheme.primary),
-      //   ),
-      // ),
       body: Column(
         children: [
           TableCalendar(
@@ -161,10 +152,11 @@ class _SchedulePageState extends State<SchedulePage> {
             calendarFormat: _calendarFormat,
             onDaySelected: (selectedDay, focusedDay) {
               if (!isSameDay(_selectedDate, selectedDay)) {
-                // Call setState when updating the selected day
                 setState(() {
                   _selectedDate = selectedDay;
                   _focusedDay = focusedDay;
+                  loadMonthEvents(
+                      focusedDay); // Перезагрузите события при смене даты
                 });
               }
             },
@@ -180,28 +172,37 @@ class _SchedulePageState extends State<SchedulePage> {
             },
             onPageChanged: (focusedDay) {
               _focusedDay = focusedDay;
+              loadMonthEvents(focusedDay);
             },
-            eventLoader: _listOfDayEvents,
+            eventLoader: (date) {
+              String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+              return mySelectedEvents[formattedDate] ?? [];
+            },
           ),
-          ..._listOfDayEvents(_selectedDate!).map(
-            (myEvents) => ListTile(
-              leading: const Icon(
-                Icons.done,
-                color: Colors.teal,
-              ),
-              title: Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                  '${myEvents['eventTitle']}',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              subtitle: Text('${myEvents['eventDescp']}'),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _listOfDayEvents(_selectedDate!).length,
+              itemBuilder: (context, index) {
+                final myEvent = _listOfDayEvents(_selectedDate!)[index];
+                return ListTile(
+                  leading: const Icon(
+                    Icons.done,
+                    color: Colors.teal,
+                  ),
+                  title: Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                      '${myEvent['eventTitle']}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  subtitle: Text('${myEvent['eventDescp']}'),
+                );
+              },
             ),
           ),
         ],
       ),
-
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddEventDialog(),
         label: const Text('Комментировать'),

@@ -20,6 +20,7 @@ class DatabaseService {
   final _db = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   /*
+
   USER PROFILE
 
   */
@@ -219,4 +220,47 @@ class DatabaseService {
   SEARCH
   
   */
+
+  /*
+
+  SHEDULE MARKS
+  
+  */
+
+// Сохранить событие в Firestore
+  Future<void> saveEvent(String date, Map<String, dynamic> event) async {
+    try {
+      await _db.collection('Events').doc(date).collection('events').add(event);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // Получить события по дате
+  Future<List<Map<String, dynamic>>> getEvents(String date) async {
+    try {
+      QuerySnapshot snapshot =
+          await _db.collection('Events').doc(date).collection('events').get();
+      return snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  // Удалить событие по ID
+  Future<void> deleteEvent(String date, String eventId) async {
+    try {
+      await _db
+          .collection('Events')
+          .doc(date)
+          .collection('events')
+          .doc(eventId)
+          .delete();
+    } catch (e) {
+      print(e);
+    }
+  }
 }
