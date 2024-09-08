@@ -29,6 +29,21 @@ class _SchedulePageState extends State<SchedulePage> {
     loadMonthEvents(_focusedDay);
   }
 
+  Future<void> _deleteEvent(String eventId) async {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate!);
+
+    // Вызов метода удаления события
+    await databaseService.deleteEvent(formattedDate, eventId);
+
+    // Обновление состояния
+    setState(() {
+      mySelectedEvents[formattedDate] = mySelectedEvents[formattedDate]
+              ?.where((event) => event['id'] != eventId)
+              .toList() ??
+          [];
+    });
+  }
+
   // Загрузка предыдущих событий из Firestore
   loadMonthEvents(DateTime focusedDay) async {
     final firstDayOfMonth = DateTime(focusedDay.year, focusedDay.month, 1);
@@ -184,13 +199,49 @@ class _SchedulePageState extends State<SchedulePage> {
               itemCount: _listOfDayEvents(_selectedDate!).length,
               itemBuilder: (context, index) {
                 final myEvent = _listOfDayEvents(_selectedDate!)[index];
+                final eventId = myEvent['id']; // Идентификатор события
+
                 return ListTile(
-                  leading: const Icon(
-                    Icons.done,
-                    color: Colors.teal,
+                  leading: IconButton(
+                    icon: const Icon(Icons.more_vert),
+                    onPressed: () {
+                      // Показать модальное окно с опциями
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return SafeArea(
+                            child: Wrap(
+                              children: <Widget>[
+                                ListTile(
+                                  leading: const Icon(Icons.delete),
+                                  title: const Text('Удалить'),
+                                  onTap: () async {
+                                    // Удаление события
+                                    await _deleteEvent(eventId);
+                                    Navigator.pop(
+                                        context); // Закрыть модальное окно
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.cancel),
+                                  title: const Text('Отмена'),
+                                  onTap: () {
+                                    // Здесь можно добавить логику редактирования события
+                                    Navigator.pop(
+                                        context); // Закрыть модальное окно
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    color: Theme.of(context).colorScheme.primary,
                   ),
+                  contentPadding: const EdgeInsets.only(left: 4, right: 8),
                   title: Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
+                    padding: const EdgeInsets.only(bottom: 5.0),
                     child: Text(
                       '${myEvent['eventTitle']}',
                       style: const TextStyle(fontWeight: FontWeight.bold),

@@ -229,20 +229,28 @@ class DatabaseService {
 // Сохранить событие в Firestore
   Future<void> saveEvent(String date, Map<String, dynamic> event) async {
     try {
-      await _db.collection('Events').doc(date).collection('events').add(event);
+      // Получение уникального идентификатора документа
+      final docRef =
+          _db.collection('Events').doc(date).collection('events').doc();
+      final eventWithId = event
+        ..['id'] = docRef.id; // Добавляем идентификатор события
+
+      await docRef.set(eventWithId);
     } catch (e) {
       print(e);
     }
   }
 
-  // Получить события по дате
   Future<List<Map<String, dynamic>>> getEvents(String date) async {
     try {
-      QuerySnapshot snapshot =
+      final querySnapshot =
           await _db.collection('Events').doc(date).collection('events').get();
-      return snapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
+
+      return querySnapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id; // Добавляем идентификатор документа
+        return data;
+      }).toList();
     } catch (e) {
       print(e);
       return [];
