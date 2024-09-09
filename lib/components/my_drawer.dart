@@ -71,6 +71,20 @@ class MyDrawer extends StatelessWidget {
                 },
               ),
 
+              // news list tile
+              MyDrawerTile(
+                title: "Н О В О С Т И",
+                icon: Icons.newspaper_rounded,
+                onTap: () {
+                  Navigator.pop(context);
+
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SchedulePage()));
+                },
+              ),
+
               // home list tile
               MyDrawerTile(
                 title: "Ф О Р У М",
@@ -84,6 +98,20 @@ class MyDrawer extends StatelessWidget {
               MyDrawerTile(
                 title: "Р А С П И С А Н И Е",
                 icon: Icons.edit_calendar,
+                onTap: () {
+                  Navigator.pop(context);
+
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SchedulePage()));
+                },
+              ),
+
+              // literature list tile
+              MyDrawerTile(
+                title: "Л И Т Е Р А Т У Р А",
+                icon: Icons.book_outlined,
                 onTap: () {
                   Navigator.pop(context);
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:netbrains/services/auth/auth_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../services/database/database_service.dart';
@@ -21,12 +22,19 @@ class _SchedulePageState extends State<SchedulePage> {
   final descpController = TextEditingController();
   final databaseService =
       DatabaseService(); // Инициализация сервиса базы данных
+  String? uid;
 
   @override
   void initState() {
     super.initState();
     _selectedDate = _focusedDay;
-    loadMonthEvents(_focusedDay);
+
+    // get current uid
+    uid = AuthService().getCurrentUid();
+
+    if (uid != null) {
+      loadMonthEvents(_focusedDay);
+    }
   }
 
   Future<void> _deleteEvent(String eventId) async {
@@ -46,6 +54,7 @@ class _SchedulePageState extends State<SchedulePage> {
 
   // Загрузка предыдущих событий из Firestore
   loadMonthEvents(DateTime focusedDay) async {
+    if (uid == null) return;
     final firstDayOfMonth = DateTime(focusedDay.year, focusedDay.month, 1);
     final lastDayOfMonth = DateTime(focusedDay.year, focusedDay.month + 1, 0);
 
@@ -54,7 +63,7 @@ class _SchedulePageState extends State<SchedulePage> {
         day = day.add(const Duration(days: 1))) {
       String formattedDate = DateFormat('yyyy-MM-dd').format(day);
       List<Map<String, dynamic>> events =
-          await databaseService.getEvents(formattedDate);
+          await databaseService.getEvents(formattedDate, uid!);
 
       if (mounted) {
         // Обновляем состояние только если виджет все еще смонтирован
@@ -120,8 +129,10 @@ class _SchedulePageState extends State<SchedulePage> {
                 String formattedDate =
                     DateFormat('yyyy-MM-dd').format(_selectedDate!);
 
-                // Сохранение события в Firestore
-                await databaseService.saveEvent(formattedDate, newEvent);
+                // Получение uid текущего пользователя
+                String? uid = AuthService().getCurrentUid();
+
+                await databaseService.saveEvent(formattedDate, newEvent, uid);
 
                 // Обновление состояния
                 setState(() {
@@ -193,6 +204,31 @@ class _SchedulePageState extends State<SchedulePage> {
               String formattedDate = DateFormat('yyyy-MM-dd').format(date);
               return mySelectedEvents[formattedDate] ?? [];
             },
+            calendarStyle: CalendarStyle(
+              // Цвет выделенного дня
+              selectedDecoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .onTertiary, // Цвет фона выбранного дня
+                shape: BoxShape.circle,
+              ),
+              // Цвет кружочка для сегодняшней даты
+              todayDecoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .primary, // Цвет кружочка для сегодняшней даты
+                shape: BoxShape.circle,
+              ),
+              // Настройка цвета индикаторов событий (кружочки под датами)
+              markerDecoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .outline, // Цвет индикаторов событий
+                shape: BoxShape.circle,
+              ),
+              markersMaxCount: 3, // Ограничение на количество индикаторов
+              markerSize: 6.0, // Размер индикаторов событий
+            ),
           ),
           Expanded(
             child: ListView.builder(

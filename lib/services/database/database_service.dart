@@ -227,13 +227,16 @@ class DatabaseService {
   */
 
 // Сохранить событие в Firestore
-  Future<void> saveEvent(String date, Map<String, dynamic> event) async {
+  Future<void> saveEvent(
+      String date, Map<String, dynamic> event, String uid) async {
+    //String uid = _auth.currentUser!.uid;
     try {
       // Получение уникального идентификатора документа
       final docRef =
           _db.collection('Events').doc(date).collection('events').doc();
-      final eventWithId = event
-        ..['id'] = docRef.id; // Добавляем идентификатор события
+      final eventWithId = event;
+      event['id'] = docRef.id; // Добавляем идентификатор события
+      event['uid'] = uid;
 
       await docRef.set(eventWithId);
     } catch (e) {
@@ -241,10 +244,14 @@ class DatabaseService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getEvents(String date) async {
+  Future<List<Map<String, dynamic>>> getEvents(String date, String uid) async {
     try {
-      final querySnapshot =
-          await _db.collection('Events').doc(date).collection('events').get();
+      final querySnapshot = await _db
+          .collection('Events')
+          .doc(date)
+          .collection('events')
+          .where('uid', isEqualTo: uid)
+          .get();
 
       return querySnapshot.docs.map((doc) {
         final data = doc.data();
