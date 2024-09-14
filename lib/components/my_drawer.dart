@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:netbrains/components/my_drawer_tile.dart';
 import 'package:netbrains/pages/literature_page.dart';
+import 'package:netbrains/pages/news_page.dart';
 import 'package:netbrains/pages/profile_page.dart';
 import 'package:netbrains/pages/schedule_page.dart';
 import 'package:netbrains/services/auth/auth_service.dart';
@@ -79,10 +80,8 @@ class MyDrawer extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(context);
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SchedulePage()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => NewsPage()));
                 },
               ),
 
