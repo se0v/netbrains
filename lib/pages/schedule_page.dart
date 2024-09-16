@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:netbrains/services/auth/auth_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../components/my_drawer.dart';
 import '../services/database/database_service.dart';
 
 class SchedulePage extends StatefulWidget {
@@ -164,6 +165,7 @@ class _SchedulePageState extends State<SchedulePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
+      drawer: MyDrawer(),
       appBar: AppBar(
         title: const Text("Р А С П И С А Н И Е"),
         foregroundColor: Theme.of(context).colorScheme.primary,

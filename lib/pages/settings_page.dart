@@ -4,6 +4,8 @@ import 'package:netbrains/components/my_settings_tile.dart';
 import 'package:netbrains/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../components/my_drawer.dart';
+
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
@@ -13,6 +15,7 @@ class SettingsPage extends StatelessWidget {
     // SCAFFOLD
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
+        drawer: MyDrawer(),
         // App Bar
         appBar: AppBar(
           title: const Text("Н А С Т Р О Й К И"),

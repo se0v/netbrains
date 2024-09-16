@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../components/my_drawer.dart';
+
 class LiteraturePage extends StatelessWidget {
   const LiteraturePage({super.key});
 
@@ -9,6 +11,7 @@ class LiteraturePage extends StatelessWidget {
     // SCAFFOLD
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
+      drawer: MyDrawer(),
       // App Bar
       appBar: AppBar(
         title: const Text("Р Е К О М Е Н Д А Ц И И"),

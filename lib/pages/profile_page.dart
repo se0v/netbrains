@@ -8,6 +8,8 @@ import 'package:netbrains/services/auth/auth_service.dart';
 import 'package:netbrains/services/database/database_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../components/my_drawer.dart';
+
 class ProfilePage extends StatefulWidget {
   // user id
   final String uid;
@@ -90,6 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
     // SCAFFOLD
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
+      drawer: MyDrawer(),
       // App Bar
       appBar: AppBar(
         title: Text(_isLoading ? '' : user!.name),
