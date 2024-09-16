@@ -200,24 +200,28 @@ class _MyPostTileState extends State<MyPostTile> {
                   const SizedBox(
                     width: 10,
                   ),
-                  // name
-                  Text(
-                    widget.post.name,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.bold),
-                  ),
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // name
+                        Text(
+                          widget.post.name,
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.bold),
+                        ),
 
-                  const SizedBox(
-                    width: 5,
-                  ),
+                        const SizedBox(
+                          width: 5,
+                        ),
 
-                  // username handle
-                  Text(
-                    '@${widget.post.username}',
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.primary),
-                  ),
+                        // username handle
+                        Text(
+                          '@${widget.post.username}',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary),
+                        ),
+                      ]),
 
                   const Spacer(),
 

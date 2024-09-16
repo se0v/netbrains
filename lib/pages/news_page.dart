@@ -69,7 +69,7 @@ class NewsPage extends StatelessWidget {
 class NewsCard extends StatelessWidget {
   final NewsItem news;
 
-  const NewsCard({Key? key, required this.news}) : super(key: key);
+  const NewsCard({super.key, required this.news});
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +103,7 @@ class NewsCard extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 news.title,
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
           ],
@@ -159,9 +159,7 @@ class NewsDetailPage extends StatelessWidget {
                   Text(
                     news.title,
                     style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24),
+                        fontWeight: FontWeight.bold, fontSize: 24),
                   ),
                   const SizedBox(height: 16.0),
                   Text(
