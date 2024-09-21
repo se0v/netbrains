@@ -31,6 +31,7 @@ flutter:
   assets:
     - assets/draweric3.jpg
     - assets/draweric2.jpg
+    - assets/blurr.jpg
 
 flutter_icons:
   android: true
