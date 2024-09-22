@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
 
         // post list is empty
         const Center(
-            child: CircularProgressIndicator(),
+            child: Text("Секундочку.."),
           )
         :
         // post list is NOT empty

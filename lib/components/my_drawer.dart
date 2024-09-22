@@ -5,8 +5,8 @@ import 'package:netbrains/pages/literature_page.dart';
 import 'package:netbrains/pages/news_page.dart';
 import 'package:netbrains/pages/profile_page.dart';
 import 'package:netbrains/pages/schedule_page.dart';
+import 'package:netbrains/services/auth/auth_gate.dart';
 import 'package:netbrains/services/auth/auth_service.dart';
-
 import '../pages/settings_page.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -33,125 +33,140 @@ class MyDrawer extends StatelessWidget {
     return Drawer(
       backgroundColor: Theme.of(context).colorScheme.surface,
       child: SafeArea(
-        child: Padding(
+        child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 25.0),
-          child: Column(
-            children: [
-              // app logo
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 40.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: Image.asset(
-                    imagePath,
-                    width: 144,
-                  ),
+          children: [
+            // app logo
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 40.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(122.0),
+                child: Image.asset(
+                  imagePath,
+                  width: 164,
+                  height: 164,
                 ),
               ),
+            ),
 
-              Divider(
-                color: Theme.of(context).colorScheme.secondary,
-              ),
+            Divider(
+              color: Theme.of(context).colorScheme.secondary,
+            ),
 
-              const SizedBox(height: 10),
+            const SizedBox(height: 10),
 
-              // profile list tile
-              MyDrawerTile(
-                title: "П Р О Ф И Л Ь",
-                icon: Icons.person,
-                onTap: () {
-                  // pop menu drawer
-                  Navigator.pop(context);
+            // profile list tile
+            MyDrawerTile(
+              title: "П Р О Ф И Л Ь",
+              icon: Icons.person,
+              onTap: () {
+                // pop menu drawer
+                Navigator.pop(context);
 
-                  // go to profile page
-                  Navigator.push(
+                // go to profile page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ProfilePage(uid: _auth.getCurrentUid()),
+                  ),
+                );
+              },
+            ),
+
+            // news list tile
+            MyDrawerTile(
+              title: "Н О В О С Т И",
+              icon: Icons.newspaper_rounded,
+              onTap: () {
+                Navigator.pop(context);
+
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => NewsPage()));
+              },
+            ),
+
+            // home list tile
+            MyDrawerTile(
+              title: "Ф О Р У М",
+              icon: Icons.public,
+              onTap: () {
+                Navigator.pop(context);
+
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const HomePage()));
+              },
+            ),
+
+            // schedule list tile
+            MyDrawerTile(
+              title: "Р А С П И С А Н И Е",
+              icon: Icons.edit_calendar,
+              onTap: () {
+                Navigator.pop(context);
+
+                Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          ProfilePage(uid: _auth.getCurrentUid()),
-                    ),
-                  );
-                },
-              ),
+                        builder: (context) => const SchedulePage()));
+              },
+            ),
 
-              // news list tile
-              MyDrawerTile(
-                title: "Н О В О С Т И",
-                icon: Icons.newspaper_rounded,
-                onTap: () {
-                  Navigator.pop(context);
+            // literature list tile
+            MyDrawerTile(
+              title: "Л И Т Е Р А Т У Р А",
+              icon: Icons.book_outlined,
+              onTap: () {
+                Navigator.pop(context);
 
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => NewsPage()));
-                },
-              ),
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LiteraturePage()));
+              },
+            ),
 
-              // home list tile
-              MyDrawerTile(
-                title: "Ф О Р У М",
-                icon: Icons.public,
-                onTap: () {
-                  Navigator.pop(context);
+            // search list tile
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomePage()));
-                },
-              ),
+            // settings list tile
+            MyDrawerTile(
+              title: "Н А С Т Р О Й К И",
+              icon: Icons.settings,
+              onTap: () {
+                // pop menu drawer
+                Navigator.pop(context);
 
-              // schedule list tile
-              MyDrawerTile(
-                title: "Р А С П И С А Н И Е",
-                icon: Icons.edit_calendar,
-                onTap: () {
-                  Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsPage(),
+                    ));
+              },
+            ),
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SchedulePage()));
-                },
-              ),
+            Divider(
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            // logout list tile
+            MyDrawerTile(
+              title: "В Ы Х О Д",
+              icon: Icons.logout,
+              onTap: () {
+                logout();
+                // pop menu drawer
+                Navigator.pop(context);
 
-              // literature list tile
-              MyDrawerTile(
-                title: "Л И Т Е Р А Т У Р А",
-                icon: Icons.book_outlined,
-                onTap: () {
-                  Navigator.pop(context);
-
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LiteraturePage()));
-                },
-              ),
-
-              // search list tile
-
-              // settings list tile
-              MyDrawerTile(
-                title: "Н А С Т Р О Й К И",
-                icon: Icons.settings,
-                onTap: () {
-                  // pop menu drawer
-                  Navigator.pop(context);
-
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SettingsPage(),
-                      ));
-                },
-              ),
-
-              const Spacer(),
-              // logout list tile
-              MyDrawerTile(
-                  title: "В Ы Х О Д", icon: Icons.logout, onTap: logout)
-            ],
-          ),
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AuthGate(),
+                  ),
+                  (Route<dynamic> route) =>
+                      false, // Удаляет все предыдущие страницы
+                );
+              },
+            )
+          ],
         ),
       ),
     );

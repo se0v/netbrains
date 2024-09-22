@@ -44,30 +44,8 @@ class MyCommentTile extends StatelessWidget {
                   )
 
                 // THIS COMMENT DOES NOT BELONG TO USER
-                else ...[
-                  // report comment button
-                  ListTile(
-                    leading: const Icon(Icons.flag),
-                    title: const Text("Пожаловаться"),
-                    onTap: () {
-                      // pop option box
-                      Navigator.pop(context);
-
-                      // handle report action
-                    },
-                  ),
-                  // block user button
-                  ListTile(
-                    leading: const Icon(Icons.block),
-                    title: const Text("Заблокировать"),
-                    onTap: () {
-                      // pop option box
-                      Navigator.pop(context);
-
-                      // handle block action
-                    },
-                  ),
-                ],
+                else
+                  ...[],
                 // cancel button
                 ListTile(
                   leading: const Icon(Icons.cancel),
