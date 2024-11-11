@@ -15,6 +15,8 @@ import 'package:netbrains/models/post.dart';
 import 'package:netbrains/models/user.dart';
 import 'package:netbrains/services/auth/auth_service.dart';
 
+import '../../models/note.dart';
+
 class DatabaseService {
   // get instance of firebase db & auth
   final _db = FirebaseFirestore.instance;
@@ -71,6 +73,64 @@ class DatabaseService {
       print(e);
     }
   }
+
+  /*
+
+  CREATE NOTE
+  
+  */
+
+  // create a note
+  Future<void> createNoteInFirebase(String note) async {
+    // try to create note
+    try {
+      // get current uid
+      String uid = _auth.currentUser!.uid;
+
+      // use this uid to get the user's profile
+      UserProfile? user = await getUserFromFirebase(uid);
+
+      // create a new note
+      Note newNote = Note(
+        id: '', // auto generate
+        uid: uid,
+        name: user!.name,
+        username: user.username,
+        note: note,
+        timestamp: Timestamp.now(),
+      );
+
+      // convert note obj -> map
+      Map<String, dynamic> newNoteMap = newNote.toMap();
+
+      // add to firebase
+      await _db.collection("Notes").add(newNoteMap);
+    }
+
+    // catch any errors
+    catch (e) {
+      print(e);
+    }
+  }
+
+  // Get all notes from Firebase
+  Future<List<Note>> getAllNotesFromFirebase() async {
+    try {
+      QuerySnapshot snapshot = await _db
+          // go to collection -> Notes
+          .collection("Notes")
+          // chronological order
+          .orderBy('timestamp', descending: true)
+          // get this data
+          .get();
+
+      // return as a list of notes
+      return snapshot.docs.map((doc) => Note.fromDocument(doc)).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
   /*
 
   POST MESSAGE
@@ -226,16 +286,16 @@ class DatabaseService {
   
   */
 
-// Сохранить событие в Firestore
+// save event in Firestore
   Future<void> saveEvent(
       String date, Map<String, dynamic> event, String uid) async {
     //String uid = _auth.currentUser!.uid;
     try {
-      // Получение уникального идентификатора документа
+      // get uni id doc
       final docRef =
           _db.collection('Events').doc(date).collection('events').doc();
       final eventWithId = event;
-      event['id'] = docRef.id; // Добавляем идентификатор события
+      event['id'] = docRef.id; // add id event
       event['uid'] = uid;
 
       await docRef.set(eventWithId);
@@ -255,7 +315,7 @@ class DatabaseService {
 
       return querySnapshot.docs.map((doc) {
         final data = doc.data();
-        data['id'] = doc.id; // Добавляем идентификатор документа
+        data['id'] = doc.id; // add id doc
         return data;
       }).toList();
     } catch (e) {
@@ -264,7 +324,7 @@ class DatabaseService {
     }
   }
 
-  // Удалить событие по ID
+  // delete event by ID
   Future<void> deleteEvent(String date, String eventId) async {
     try {
       await _db

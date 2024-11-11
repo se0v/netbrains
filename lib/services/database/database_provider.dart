@@ -1,7 +1,10 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:netbrains/services/database/database_service.dart';
 
 import '../../models/comment.dart';
+import '../../models/note.dart';
 import '../../models/post.dart';
 import '../../models/user.dart';
 
@@ -15,6 +18,39 @@ class DatabaseProvider extends ChangeNotifier {
 
   // update user bio
   Future<void> updateBio(String bio) => _db.updateUserBioInFirebase(bio);
+
+  /*
+
+  NOTES
+
+  */
+
+  // local list of notes
+  List<Note> _allNotes = [];
+
+  // get notes
+  List<Note> get allNotes => _allNotes;
+
+  // note create
+  Future<void> createNote(String note) async {
+    // note create in firebase
+    await _db.createNoteInFirebase(note);
+
+    // reload data from firebase
+    await loadAllNotes();
+  }
+
+  // fetch all notes
+  Future<void> loadAllNotes() async {
+    // get all notes from firebase
+    final allNotes = await _db.getAllNotesFromFirebase();
+
+    // update local data
+    _allNotes = allNotes;
+
+    // update UI
+    notifyListeners();
+  }
 
   /*
 

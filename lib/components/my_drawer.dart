@@ -7,6 +7,7 @@ import 'package:netbrains/pages/profile_page.dart';
 import 'package:netbrains/pages/schedule_page.dart';
 import 'package:netbrains/services/auth/auth_gate.dart';
 import 'package:netbrains/services/auth/auth_service.dart';
+import '../pages/ebbi_page.dart';
 import '../pages/settings_page.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -73,6 +74,17 @@ class MyDrawer extends StatelessWidget {
                 );
               },
             ),
+
+            // Ebbinghaus list tile
+            MyDrawerTile(
+                title: "З А М Е Т К И",
+                icon: Icons.now_widgets_outlined,
+                onTap: () {
+                  Navigator.pop(context);
+
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => EbbiPage()));
+                }),
 
             // news list tile
             MyDrawerTile(

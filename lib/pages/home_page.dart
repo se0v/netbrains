@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    // let's load all the posts!
+    // load all the posts
     loadAllPosts();
   }
 
