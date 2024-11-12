@@ -5,11 +5,11 @@ import 'package:netbrains/helper/navigate_pages.dart';
 import 'package:provider/provider.dart';
 
 import '../components/my_note_tile.dart';
-import '../models/note.dart';
 import '../services/database/database_provider.dart';
 
 class EbbiPage extends StatefulWidget {
-  const EbbiPage({super.key});
+  final String uid;
+  const EbbiPage({super.key, required this.uid});
 
   @override
   State<EbbiPage> createState() => _EbbiPageState();
@@ -61,48 +61,76 @@ class _EbbiPageState extends State<EbbiPage> {
   // BUILD UI
   @override
   Widget build(BuildContext context) {
+    // get user notes
+    final allUserNotes = listeningProvider.filterUserNotes(widget.uid);
+
     // SCAFFOLD
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      drawer: MyDrawer(),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        drawer: MyDrawer(),
 
-      // App Bar
-      appBar: AppBar(
-        title: const Text("З А М Е Т К И"),
-        foregroundColor: Theme.of(context).colorScheme.primary,
-      ),
+        // App Bar
+        appBar: AppBar(
+          title: const Text("З А М Е Т К И"),
+          foregroundColor: Theme.of(context).colorScheme.primary,
+        ),
 
-      // Floatting action button
-      floatingActionButton: FloatingActionButton(
-        onPressed: _openCreateNoteBox,
-        child: const Icon(Icons.add),
-      ),
+        // Floatting action button
+        floatingActionButton: FloatingActionButton(
+          onPressed: _openCreateNoteBox,
+          child: const Icon(Icons.add),
+        ),
 
-      // Body: list of all notes
-      body: _buildNoteList(listeningProvider.allNotes),
-    );
+        // Body
+        body: ListView(children: [
+          allUserNotes.isEmpty
+              ?
+
+              // user note is empty
+              const Center(
+                  child: Text("Ещё нет записей.."),
+                )
+              :
+              // user note is NOT empty
+              ListView.builder(
+                  itemCount: allUserNotes.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    // get individual notes
+                    final note = allUserNotes[index];
+
+                    // note tile UI
+                    return MyNoteTile(
+                        note: note, onNoteTap: () => goNotePage(context, note));
+                  },
+                )
+        ])
+        // Body: list of all notes
+        //body: _buildNoteList(listeningProvider.allNotes),
+        );
   }
 
   // build list UI given a list of notes
-  Widget _buildNoteList(List<Note> notes) {
-    return notes.isEmpty
-        ?
+  // Widget _buildNoteList(List<Note> notes) {
+  //   return notes.isEmpty
+  //       ?
 
-        // note list is empty
-        const Center(
-            child: Text("Секундочку.."),
-          )
-        :
-        // note list is NOT empty
-        ListView.builder(
-            itemCount: notes.length,
-            itemBuilder: (context, index) {
-              // get each indi note
-              final note = notes[index];
+  //       // note list is empty
+  //       const Center(
+  //           child: Text("Секундочку.."),
+  //         )
+  //       :
+  //       // note list is NOT empty
+  //       ListView.builder(
+  //           itemCount: notes.length,
+  //           itemBuilder: (context, index) {
+  //             // get each indi note
+  //             final note = notes[index];
 
-              // return Note Tile UI
-              return MyNoteTile(
-                  note: note, onNoteTap: () => goNotePage(context, note));
-            });
-  }
+  //             // return Note Tile UI
+  //             return MyNoteTile(
+  //                 note: note, onNoteTap: () => goNotePage(context, note));
+  //           });
+  // }
 }

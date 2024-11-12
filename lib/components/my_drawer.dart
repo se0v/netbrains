@@ -82,8 +82,11 @@ class MyDrawer extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(context);
 
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => EbbiPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              EbbiPage(uid: _auth.getCurrentUid())));
                 }),
 
             // news list tile

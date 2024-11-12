@@ -52,6 +52,11 @@ class DatabaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // filter and returns notes given uid
+  List<Note> filterUserNotes(String uid) {
+    return _allNotes.where((note) => note.uid == uid).toList();
+  }
+
   /*
 
   POSTS
