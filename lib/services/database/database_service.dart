@@ -113,6 +113,15 @@ class DatabaseService {
     }
   }
 
+  // Delete a note
+  Future<void> deleteNoteFromFirebase(String noteId) async {
+    try {
+      await _db.collection("Notes").doc(noteId).delete();
+    } catch (e) {
+      print(e);
+    }
+  }
+
   // Get all notes from Firebase
   Future<List<Note>> getAllNotesFromFirebase() async {
     try {

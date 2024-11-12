@@ -57,6 +57,15 @@ class DatabaseProvider extends ChangeNotifier {
     return _allNotes.where((note) => note.uid == uid).toList();
   }
 
+  // delete note
+  Future<void> deleteNote(String noteId) async {
+    // delete from firebase
+    await _db.deleteNoteFromFirebase(noteId);
+
+    // reload data from firebase
+    await loadAllNotes();
+  }
+
   /*
 
   POSTS

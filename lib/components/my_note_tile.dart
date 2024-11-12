@@ -43,6 +43,46 @@ class _MyNoteTileState extends State<MyNoteTile> {
     await databaseProvider.loadAllNotes();
   }
 
+  // show options for note
+  void _showOptions() {
+    // show options
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return SafeArea(
+              child: Wrap(
+            children: [
+              // remember button
+              ListTile(
+                leading: const Icon(Icons.extension),
+                title: const Text("Запоминать!"),
+                onTap: () {},
+              ),
+
+              // delete note button
+              ListTile(
+                leading: const Icon(Icons.delete),
+                title: const Text("Удалить"),
+                onTap: () async {
+                  // pop option box
+                  Navigator.pop(context);
+
+                  // handle delete action
+                  await databaseProvider.deleteNote(widget.note.id);
+                },
+              ),
+
+              // cancel button
+              ListTile(
+                leading: const Icon(Icons.cancel),
+                title: const Text("Отмена"),
+                onTap: () => Navigator.pop(context),
+              ),
+            ],
+          ));
+        });
+  }
+
   // BUILD UI
   @override
   Widget build(BuildContext context) {
@@ -66,6 +106,12 @@ class _MyNoteTileState extends State<MyNoteTile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            GestureDetector(
+                onTap: _showOptions,
+                child: Icon(
+                  Icons.more_horiz,
+                  color: Theme.of(context).colorScheme.primary,
+                )),
             const SizedBox(
               height: 20,
             ),

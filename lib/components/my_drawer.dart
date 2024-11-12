@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:netbrains/components/my_drawer_tile.dart';
 import 'package:netbrains/pages/home_page.dart';
-import 'package:netbrains/pages/literature_page.dart';
 import 'package:netbrains/pages/news_page.dart';
 import 'package:netbrains/pages/profile_page.dart';
 import 'package:netbrains/pages/schedule_page.dart';
@@ -124,20 +123,6 @@ class MyDrawer extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const SchedulePage()));
-              },
-            ),
-
-            // literature list tile
-            MyDrawerTile(
-              title: "Л И Т Е Р А Т У Р А",
-              icon: Icons.book_outlined,
-              onTap: () {
-                Navigator.pop(context);
-
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LiteraturePage()));
               },
             ),
 

@@ -105,32 +105,6 @@ class _EbbiPageState extends State<EbbiPage> {
                         note: note, onNoteTap: () => goNotePage(context, note));
                   },
                 )
-        ])
-        // Body: list of all notes
-        //body: _buildNoteList(listeningProvider.allNotes),
-        );
+        ]));
   }
-
-  // build list UI given a list of notes
-  // Widget _buildNoteList(List<Note> notes) {
-  //   return notes.isEmpty
-  //       ?
-
-  //       // note list is empty
-  //       const Center(
-  //           child: Text("Секундочку.."),
-  //         )
-  //       :
-  //       // note list is NOT empty
-  //       ListView.builder(
-  //           itemCount: notes.length,
-  //           itemBuilder: (context, index) {
-  //             // get each indi note
-  //             final note = notes[index];
-
-  //             // return Note Tile UI
-  //             return MyNoteTile(
-  //                 note: note, onNoteTap: () => goNotePage(context, note));
-  //           });
-  // }
 }
