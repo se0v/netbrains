@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "345725309478",
     "project_id": "brainetapp",
-    "storage_bucket": "brainetapp.appspot.com"
+    "storage_bucket": "brainetapp.firebasestorage.app"
   },
   "client": [
     {

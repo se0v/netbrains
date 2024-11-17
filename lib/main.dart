@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:netbrains/firebase_options.dart';
 import 'package:netbrains/services/auth/auth_gate.dart';
 import 'package:netbrains/services/database/database_provider.dart';
+import 'package:netbrains/services/notification/notification_service.dart';
 import 'package:netbrains/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -18,12 +18,15 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp();
 
   // create instance ThemeProvider and load save theme
   final themeProvider = ThemeProvider();
   // wait load theme
   await themeProvider.loadTheme();
+
+  NotificationService notificationService = NotificationService();
+  await notificationService.init();
 
   // run app
   runApp(MultiProvider(
