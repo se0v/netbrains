@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../models/note.dart';
 import '../services/database/database_provider.dart';
+import '../services/notification/notification_service.dart';
 
 class NotePage extends StatefulWidget {
   final Note note;
@@ -20,24 +21,39 @@ class _NotePageState extends State<NotePage> {
   late final databaseProvider =
       Provider.of<DatabaseProvider>(context, listen: false);
 
+  // создайте экземпляр NotificationService
+  final NotificationService _notificationService = NotificationService();
+
+  @override
+  void initState() {
+    super.initState();
+    // инициализируем NotificationService
+    _notificationService.initNotification();
+  }
+
   // BUILD UI
   @override
   Widget build(BuildContext context) {
     // SCAFFOLD
     return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
 
-        // App Bar
-        appBar: AppBar(
-          foregroundColor: Theme.of(context).colorScheme.primary,
-        ),
+      // App Bar
+      appBar: AppBar(
+        foregroundColor: Theme.of(context).colorScheme.primary,
+      ),
 
-        // Body
-        body: ListView(
-          children: [
-            // Note
-            MyNoteTile(note: widget.note, onNoteTap: () {}),
-          ],
-        ));
+      // Body
+      body: ListView(
+        children: [
+          // Note
+          MyNoteTile(
+            note: widget.note,
+            onNoteTap: () {},
+            notificationService: _notificationService,
+          ),
+        ],
+      ),
+    );
   }
 }

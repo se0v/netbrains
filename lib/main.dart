@@ -1,12 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:netbrains/pages/notification_page.dart';
 import 'package:netbrains/services/auth/auth_gate.dart';
 import 'package:netbrains/services/database/database_provider.dart';
 import 'package:netbrains/services/notification/notification_service.dart';
 import 'package:netbrains/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   // firebase setup
@@ -26,7 +29,7 @@ void main() async {
   await themeProvider.loadTheme();
 
   NotificationService notificationService = NotificationService();
-  await notificationService.init();
+  await notificationService.initNotification();
 
   // run app
   runApp(MultiProvider(
@@ -48,6 +51,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const AuthGate(),
+      navigatorKey: navigatorKey,
+      routes: {'/notification_screen': (context) => const NotificationPage()},
       theme: Provider.of<ThemeProvider>(context).themeData,
       // localization
       localizationsDelegates: const [

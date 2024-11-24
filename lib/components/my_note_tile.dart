@@ -9,6 +9,7 @@ NOTE TILE
 
 import 'package:flutter/material.dart';
 import 'package:netbrains/services/database/database_provider.dart';
+import 'package:netbrains/services/notification/notification_service.dart';
 import 'package:provider/provider.dart';
 
 import '../models/note.dart';
@@ -16,8 +17,13 @@ import '../models/note.dart';
 class MyNoteTile extends StatefulWidget {
   final Note note;
   final void Function()? onNoteTap;
+  final NotificationService notificationService;
 
-  const MyNoteTile({super.key, required this.note, required this.onNoteTap});
+  const MyNoteTile(
+      {super.key,
+      required this.note,
+      required this.onNoteTap,
+      required this.notificationService});
 
   @override
   State<MyNoteTile> createState() => _MyNoteTileState();
@@ -28,7 +34,6 @@ class _MyNoteTileState extends State<MyNoteTile> {
   late final listeningProvider = Provider.of<DatabaseProvider>(context);
   late final databaseProvider =
       Provider.of<DatabaseProvider>(context, listen: false);
-
   // on startup
   @override
   void initState() {
@@ -56,7 +61,10 @@ class _MyNoteTileState extends State<MyNoteTile> {
               ListTile(
                 leading: const Icon(Icons.extension),
                 title: const Text("Запоминать!"),
-                onTap: () {},
+                onTap: () async {
+                  Navigator.pop(context);
+                  await widget.notificationService.showNotification();
+                },
               ),
 
               // delete note button

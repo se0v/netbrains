@@ -1,29 +1,81 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
-  // FCM initialization
-  Future<void> init() async {
-    // get token device
-    String? token = await _firebaseMessaging.getToken();
-    print('FCM Token: $token');
+  Future<void> initNotification() async {
+    // for android
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@drawable/ic_launcher');
 
-    // Foreground message
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Foreground message received: ${message.notification?.title}');
-    });
+    // for IOS
+    const DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings();
 
-    // OpenedApp message
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('Message opened app: ${message.notification?.title}');
-    });
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsDarwin,
+    );
 
-    // Background message
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    // init plug
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        print('Notification clicked: ${response.payload}');
+      },
+    );
   }
-}
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Handling background message: ${message.messageId}");
+  // SHOW NOTI
+  Future<void> showNotification() async {
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      'channel_id', // uniq ID
+      'Channel Name', // name
+      channelDescription: 'Channel Description',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: DarwinNotificationDetails(),
+    );
+
+    // Show noti
+    await flutterLocalNotificationsPlugin.show(
+      0, // ID noti
+      'Запомни',
+      'А то забудешь',
+      notificationDetails,
+      payload: 'Custom Data',
+    );
+  }
+
+  Future<void> scheduleNotification() async {
+    tz.initializeTimeZones();
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0, // ID noti
+      'Scheduled Title',
+      'Scheduled Body',
+      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'scheduled_channel_id',
+          'Scheduled Channel Name',
+          channelDescription: 'Scheduled Channel Description',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+  }
 }
