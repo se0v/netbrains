@@ -146,7 +146,7 @@ class _SchedulePageState extends State<SchedulePage> {
 
                 titleController.clear();
                 descpController.clear();
-                Navigator.pop(context);
+                Navigator.pop(BuildContext as BuildContext);
                 return;
               }
             },
@@ -256,8 +256,8 @@ class _SchedulePageState extends State<SchedulePage> {
                                   onTap: () async {
                                     // Удаление события
                                     await _deleteEvent(eventId);
-                                    Navigator.pop(
-                                        context); // Закрыть модальное окно
+                                    Navigator.pop(BuildContext
+                                        as BuildContext); // Закрыть модальное окно
                                   },
                                 ),
                                 ListTile(

@@ -46,11 +46,7 @@ class _MyNoteTileState extends State<MyNoteTile> {
 
   // load all notes
   Future<void> loadAllNotes() async {
-    if (sendTime != null) {
-      await databaseProvider.loadAllNotes(sendTime!);
-    } else {
-      print("Ошибка: sendTime имеет значение null.");
-    }
+    await databaseProvider.loadAllNotes();
   }
 
   // show options for note
@@ -84,7 +80,7 @@ class _MyNoteTileState extends State<MyNoteTile> {
                   Navigator.pop(context);
 
                   // handle delete action
-                  await databaseProvider.deleteNote(widget.note.id, sendTime!);
+                  await databaseProvider.deleteNote(widget.note.id);
                 },
               ),
 
