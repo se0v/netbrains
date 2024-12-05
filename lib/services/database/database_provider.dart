@@ -32,16 +32,16 @@ class DatabaseProvider extends ChangeNotifier {
   List<Note> get allNotes => _allNotes;
 
   // note create
-  Future<void> createNote(String note) async {
+  Future<void> createNote(String note, DateTime sendTime) async {
     // note create in firebase
     await _db.createNoteInFirebase(note);
 
     // reload data from firebase
-    await loadAllNotes();
+    await loadAllNotes(sendTime);
   }
 
   // fetch all notes
-  Future<void> loadAllNotes() async {
+  Future<void> loadAllNotes(DateTime sendTime) async {
     // get all notes from firebase
     final allNotes = await _db.getAllNotesFromFirebase();
 
@@ -50,6 +50,12 @@ class DatabaseProvider extends ChangeNotifier {
 
     // update UI
     notifyListeners();
+
+    // time tracking
+    final receiveTime = DateTime.now();
+    print('Время получения записи $receiveTime');
+    final delay = receiveTime.difference(sendTime).inMilliseconds;
+    print('Время отклика: $delay ms');
   }
 
   // filter and returns notes given uid
@@ -58,12 +64,12 @@ class DatabaseProvider extends ChangeNotifier {
   }
 
   // delete note
-  Future<void> deleteNote(String noteId) async {
+  Future<void> deleteNote(String noteId, DateTime sendTime) async {
     // delete from firebase
     await _db.deleteNoteFromFirebase(noteId);
 
     // reload data from firebase
-    await loadAllNotes();
+    await loadAllNotes(sendTime);
   }
 
   /*

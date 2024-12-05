@@ -17,6 +17,7 @@ class EbbiPage extends StatefulWidget {
 }
 
 class _EbbiPageState extends State<EbbiPage> {
+  DateTime? sendTime = DateTime.fromMillisecondsSinceEpoch(0);
   // Providers
   late final listeningProvider = Provider.of<DatabaseProvider>(context);
   late final databaseProvider =
@@ -42,7 +43,11 @@ class _EbbiPageState extends State<EbbiPage> {
 
   // Load all notes
   Future<void> loadAllNotes() async {
-    await databaseProvider.loadAllNotes();
+    if (sendTime != null) {
+      await databaseProvider.loadAllNotes(sendTime!);
+    } else {
+      print("Ошибка: sendTime имеет значение null.");
+    }
   }
 
   // Show create note dialog box
@@ -54,6 +59,10 @@ class _EbbiPageState extends State<EbbiPage> {
         hintText: "Важная заметка",
         onPressed: () async {
           await createNote(_noteController.text);
+          // time tracking
+          sendTime = DateTime.now();
+          print('Время создания записи $sendTime');
+          // close dialog
           Navigator.pop(context);
         },
         onPressedText: "Ввод",
@@ -63,7 +72,11 @@ class _EbbiPageState extends State<EbbiPage> {
 
   // User wants to create note
   Future<void> createNote(String note) async {
-    await databaseProvider.createNote(note);
+    if (sendTime != null) {
+      await databaseProvider.loadAllNotes(sendTime!);
+    } else {
+      print("Ошибка: sendTime имеет значение null.");
+    }
   }
 
   // BUILD UI
