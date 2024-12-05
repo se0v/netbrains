@@ -19,8 +19,17 @@ import '../../models/note.dart';
 
 class DatabaseService {
   // get instance of firebase db & auth
-  final _db = FirebaseFirestore.instance;
+  final FirebaseFirestore _db;
   final _auth = FirebaseAuth.instance;
+
+  // Constructor
+  DatabaseService() : _db = FirebaseFirestore.instance {
+    // Configure Firestore settings
+    _db.settings = const Settings(
+      persistenceEnabled: true,
+      cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+    );
+  }
   /*
 
   USER PROFILE
