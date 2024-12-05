@@ -30,6 +30,7 @@ class MyNoteTile extends StatefulWidget {
 }
 
 class _MyNoteTileState extends State<MyNoteTile> {
+  DateTime? sendTime;
   // providers
   late final listeningProvider = Provider.of<DatabaseProvider>(context);
   late final databaseProvider =
@@ -62,8 +63,11 @@ class _MyNoteTileState extends State<MyNoteTile> {
                 leading: const Icon(Icons.extension),
                 title: const Text("Запоминать!"),
                 onTap: () async {
+                  // time tracking
+                  sendTime = DateTime.now();
+                  print('Время отправки: $sendTime');
                   Navigator.pop(context);
-                  await widget.notificationService.showNotification();
+                  await widget.notificationService.showNotification(sendTime!);
                 },
               ),
 

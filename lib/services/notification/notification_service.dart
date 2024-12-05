@@ -31,11 +31,17 @@ class NotificationService {
   }
 
   // SHOW NOTI
-  Future<void> showNotification() async {
+  Future<void> showNotification(DateTime sendTime) async {
+    // time tracking
+    final receiveTime = DateTime.now();
+    print('Время получения: $receiveTime');
+    final delay = receiveTime.difference(sendTime).inMilliseconds;
+    print('Время отклика: $delay ms');
+    // this fun
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
-      'channel_id', // uniq ID
-      'Channel Name', // name
+      'channel_id',
+      'Channel Name',
       channelDescription: 'Channel Description',
       importance: Importance.max,
       priority: Priority.high,
