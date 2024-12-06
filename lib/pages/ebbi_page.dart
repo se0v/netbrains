@@ -8,6 +8,8 @@ import '../components/my_note_tile.dart';
 import '../services/database/database_provider.dart';
 import '../services/notification/notification_service.dart';
 
+import 'package:firebase_performance/firebase_performance.dart';
+
 class EbbiPage extends StatefulWidget {
   final String uid;
   const EbbiPage({super.key, required this.uid});
@@ -41,9 +43,15 @@ class _EbbiPageState extends State<EbbiPage> {
     loadAllNotes();
   }
 
-  // Load all notes
+  // Load all notes with performance monitoring
   Future<void> loadAllNotes() async {
-    await databaseProvider.loadAllNotes();
+    final trace = FirebasePerformance.instance.newTrace("loadAllNotes_trace");
+    trace.start();
+    try {
+      await databaseProvider.loadAllNotes();
+    } finally {
+      trace.stop();
+    }
   }
 
   // Show create note dialog box
@@ -66,10 +74,16 @@ class _EbbiPageState extends State<EbbiPage> {
     );
   }
 
-  // User wants to create note
+  // User wants to create note + performance monitoring
   Future<void> createNote(String note) async {
-    await databaseProvider.createNote(note);
-    await loadAllNotes();
+    final trace = FirebasePerformance.instance.newTrace("createNote_trace");
+    trace.start();
+    try {
+      await databaseProvider.createNote(note);
+      await loadAllNotes();
+    } finally {
+      trace.stop();
+    }
   }
 
   // BUILD UI
