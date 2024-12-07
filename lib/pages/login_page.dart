@@ -52,12 +52,12 @@ class _LoginOrRegisterState extends State<LoginPage> {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // SliverAppBar с текстом
+            // SliverAppBar + text
             SliverAppBar(
               pinned: true,
               floating: true,
               snap: false,
-              expandedHeight: 4 * (MediaQuery.of(context).size.height) / 5,
+              expandedHeight: (MediaQuery.of(context).size.height) / 4,
               flexibleSpace: FlexibleSpaceBar(
                 background: Image.asset(
                   'assets/blurr.jpg',
@@ -69,7 +69,7 @@ class _LoginOrRegisterState extends State<LoginPage> {
                 title: SingleChildScrollView(
                   child: Column(
                     children: [
-                      // Иконки перед текстом
+                      // Icons front of text
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -81,7 +81,7 @@ class _LoginOrRegisterState extends State<LoginPage> {
                                       color: Colors.white, fontSize: 12)),
                             ],
                           ),
-                          SizedBox(width: 20), // Отступ между иконками
+                          SizedBox(width: 20), // Padding between icons
                           Column(
                             children: [
                               Icon(Icons.calendar_today, color: Colors.white),
@@ -90,7 +90,7 @@ class _LoginOrRegisterState extends State<LoginPage> {
                                       color: Colors.white, fontSize: 12)),
                             ],
                           ),
-                          SizedBox(width: 20), // Отступ между иконками
+                          SizedBox(width: 20), // Same
                           Column(
                             children: [
                               Icon(Icons.article, color: Colors.white),
@@ -102,16 +102,16 @@ class _LoginOrRegisterState extends State<LoginPage> {
                         ],
                       ),
                       const SizedBox(
-                          height: 20), // Отступ между иконками и текстом
+                          height: 20), // Padding between icons and text
                       Text(
-                        "«BrainNet» — твой незаменимый помощник в учёбе.\n\nОбщайся на форуме, \nследи за расписанием, \nпервым узнавай самые актуальные новости. \nДальше — больше!\n\nАВТОРИЗОВАТЬСЯ\nдля доступа\n▼",
+                        "«BrainNet» — твой незаменимый помощник в учёбе",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
                           foreground: Paint()
                             ..style = PaintingStyle.stroke
-                            ..strokeWidth = 1 // Толщина обводки
-                            ..color = Colors.white, // Цвет обводки
+                            ..strokeWidth = 1 // thickness of outline
+                            ..color = Colors.white, // color of outline
                         ),
                       ),
                     ],
@@ -141,7 +141,7 @@ class _LoginOrRegisterState extends State<LoginPage> {
                         ),
                         // Welcome back message
                         Text(
-                          "С возвращением!",
+                          "Авторизоваться:",
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
                             fontSize: 16,
@@ -152,6 +152,7 @@ class _LoginOrRegisterState extends State<LoginPage> {
                         ),
                         // email textfield
                         MyTextField(
+                          key: const Key('email_input'),
                           controller: emailController,
                           hintText: "Почта",
                           obscureText: false,
@@ -161,6 +162,7 @@ class _LoginOrRegisterState extends State<LoginPage> {
                         ),
                         // password textfield
                         MyTextField(
+                          key: const Key('password_input'),
                           controller: pwController,
                           hintText: "Пароль",
                           obscureText: true,
