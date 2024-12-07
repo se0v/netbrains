@@ -152,7 +152,6 @@ class _LoginOrRegisterState extends State<LoginPage> {
                         ),
                         // email textfield
                         MyTextField(
-                          key: const Key('email_input'),
                           controller: emailController,
                           hintText: "Почта",
                           obscureText: false,
@@ -162,7 +161,6 @@ class _LoginOrRegisterState extends State<LoginPage> {
                         ),
                         // password textfield
                         MyTextField(
-                          key: const Key('password_input'),
                           controller: pwController,
                           hintText: "Пароль",
                           obscureText: true,
