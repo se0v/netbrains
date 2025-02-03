@@ -7,6 +7,7 @@ import '../../models/comment.dart';
 import '../../models/note.dart';
 import '../../models/post.dart';
 import '../../models/user.dart';
+import 'package:collection/collection.dart';
 
 class DatabaseProvider extends ChangeNotifier {
   // get db & auth service
@@ -24,6 +25,12 @@ class DatabaseProvider extends ChangeNotifier {
   NOTES
 
   */
+
+  // search note by user
+  Future<Note?> loadNoteForUser(String uid) async {
+    final allNotes = await _db.getAllNotesFromFirebase();
+    return allNotes.firstWhereOrNull((note) => note.uid == uid);
+  }
 
   // local list of notes
   List<Note> _allNotes = [];

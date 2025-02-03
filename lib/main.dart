@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:netbrains/models/note.dart';
 import 'package:netbrains/pages/notification_page.dart';
 import 'package:netbrains/services/auth/auth_gate.dart';
 import 'package:netbrains/services/database/database_provider.dart';
@@ -52,7 +53,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const AuthGate(),
       navigatorKey: navigatorKey,
-      routes: {'/notification_screen': (context) => const NotificationPage()},
+      routes: {
+        '/notification_screen': (context) => NotificationPage(
+            note: ModalRoute.of(context)!.settings.arguments as Note),
+      },
       theme: Provider.of<ThemeProvider>(context).themeData,
       // localization
       localizationsDelegates: const [

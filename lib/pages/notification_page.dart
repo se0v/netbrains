@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:netbrains/models/note.dart';
 
 class NotificationPage extends StatelessWidget {
-  const NotificationPage({super.key});
+  final Note note;
+  const NotificationPage({super.key, required this.note});
 
   @override
   Widget build(BuildContext context) {

@@ -176,7 +176,7 @@ class _SchedulePageState extends State<SchedulePage> {
             locale: 'ru_RU',
             focusedDay: _focusedDay,
             firstDay: DateTime(2023),
-            lastDay: DateTime(2025),
+            lastDay: DateTime(2026),
             calendarFormat: _calendarFormat,
             onDaySelected: (selectedDay, focusedDay) {
               if (!isSameDay(_selectedDate, selectedDay)) {
