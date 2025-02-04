@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -54,8 +55,32 @@ class MyApp extends StatelessWidget {
       home: const AuthGate(),
       navigatorKey: navigatorKey,
       routes: {
-        '/notification_screen': (context) => NotificationPage(
-            note: ModalRoute.of(context)!.settings.arguments as Note),
+        '/notification_screen': (context) {
+          final noteId = ModalRoute.of(context)?.settings.arguments as String?;
+
+          if (noteId == null) {
+            return const Scaffold(
+              body: Center(child: Text("Ошибка: ID заметки не передан")),
+            );
+          }
+
+          // Получаем доступ к базе данных
+          final databaseProvider =
+              Provider.of<DatabaseProvider>(context, listen: false);
+
+          // Ищем заметку по noteId (без ошибки)
+          final Note? note = databaseProvider.allNotes.firstWhereOrNull(
+            (note) => note.id == noteId,
+          );
+
+          if (note == null) {
+            return const Scaffold(
+              body: Center(child: Text("Ошибка: Заметка не найдена")),
+            );
+          }
+
+          return NotificationPage(note: note);
+        },
       },
       theme: Provider.of<ThemeProvider>(context).themeData,
       // localization

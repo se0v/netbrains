@@ -2,16 +2,16 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../main.dart';
+
 class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
   Future<void> initNotification() async {
-    // for android
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@drawable/ic_launcher');
 
-    // for IOS
     const DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings();
 
@@ -25,18 +25,20 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        print('Notification clicked: ${response.payload}');
+        // checking payload (note ID)
+        if (response.payload != null) {
+          // open page
+          navigatorKey.currentState?.pushNamed(
+            '/notification_screen',
+            arguments: response.payload,
+          );
+        }
       },
     );
   }
 
   // SHOW NOTI
-  Future<void> showNotification(DateTime sendTime) async {
-    // time tracking
-    final receiveTime = DateTime.now();
-    print('Время получения: $receiveTime');
-    final delay = receiveTime.difference(sendTime).inMilliseconds;
-    print('Время отклика: $delay ms');
+  Future<void> showNotification(String noteId) async {
     // this fun
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
@@ -52,13 +54,13 @@ class NotificationService {
       iOS: DarwinNotificationDetails(),
     );
 
-    // Show noti
+    // sending ID note to payload
     await flutterLocalNotificationsPlugin.show(
       0, // ID noti
       'Запомни',
       'А то забудешь',
       notificationDetails,
-      payload: 'Custom Data',
+      payload: noteId,
     );
   }
 

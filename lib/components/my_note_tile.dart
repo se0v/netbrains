@@ -67,7 +67,8 @@ class _MyNoteTileState extends State<MyNoteTile> {
                   sendTime = DateTime.now();
                   print('Время отправки: $sendTime');
                   Navigator.pop(context);
-                  await widget.notificationService.showNotification(sendTime!);
+                  await widget.notificationService
+                      .showNotification(sendTime!.toIso8601String());
                 },
               ),
 
