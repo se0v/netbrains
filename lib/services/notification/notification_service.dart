@@ -25,7 +25,7 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        // checking payload (note ID)
+        // checking payload (note Text)
         if (response.payload != null) {
           // open page
           navigatorKey.currentState?.pushNamed(
@@ -38,7 +38,7 @@ class NotificationService {
   }
 
   // SHOW NOTI
-  Future<void> showNotification(String noteId) async {
+  Future<void> showNotification(String noteText) async {
     // this fun
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
@@ -60,7 +60,7 @@ class NotificationService {
       'Запомни',
       'А то забудешь',
       notificationDetails,
-      payload: noteId,
+      payload: noteText,
     );
   }
 

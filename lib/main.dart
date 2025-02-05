@@ -56,11 +56,12 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       routes: {
         '/notification_screen': (context) {
-          final noteId = ModalRoute.of(context)?.settings.arguments as String?;
+          final noteText =
+              ModalRoute.of(context)?.settings.arguments as String?;
 
-          if (noteId == null) {
+          if (noteText == null) {
             return const Scaffold(
-              body: Center(child: Text("Ошибка: ID заметки не передан")),
+              body: Center(child: Text("Ошибка: текст заметки не передан")),
             );
           }
 
@@ -70,7 +71,7 @@ class MyApp extends StatelessWidget {
 
           // Ищем заметку по noteId (без ошибки)
           final Note? note = databaseProvider.allNotes.firstWhereOrNull(
-            (note) => note.id == noteId,
+            (note) => note.note == noteText,
           );
 
           if (note == null) {

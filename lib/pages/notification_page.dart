@@ -7,7 +7,8 @@ class NotificationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String? noteId =
+    DateTime? sendTime;
+    final String? noteText =
         ModalRoute.of(context)?.settings.arguments as String?;
     return Scaffold(
       appBar: AppBar(title: const Text("Notification")),
@@ -16,13 +17,16 @@ class NotificationPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Заметка ID: $noteId',
+              'Заметка текст: $noteText',
               style: const TextStyle(fontSize: 24),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
+                // time tracking
+                sendTime = DateTime.now();
+                print('Время отправки: $sendTime');
               },
               child: const Text("Повторил(-а)"),
             ),
