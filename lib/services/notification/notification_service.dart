@@ -27,6 +27,8 @@ class NotificationService {
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         // checking payload (note Text)
         if (response.payload != null) {
+          // clears all previous screens
+          navigatorKey.currentState?.popUntil((route) => route.isFirst);
           // open page
           navigatorKey.currentState?.pushNamed(
             '/notification_screen',

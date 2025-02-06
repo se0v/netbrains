@@ -30,6 +30,7 @@ void main() async {
   // wait load theme
   await themeProvider.loadTheme();
 
+  // launch notiService
   NotificationService notificationService = NotificationService();
   await notificationService.initNotification();
 
