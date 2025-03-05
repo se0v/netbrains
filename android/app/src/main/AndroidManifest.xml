@@ -1,11 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
 <uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
 
     <application
         android:label="braiNNet"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <service android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationService"
+             android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

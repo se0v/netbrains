@@ -17,7 +17,7 @@ class NotificationPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Заметка текст: $noteText',
+              'Пора повторить: \n\n$noteText',
               style: const TextStyle(fontSize: 24),
             ),
             const SizedBox(height: 20),
