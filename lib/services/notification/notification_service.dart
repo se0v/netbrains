@@ -1,86 +1,93 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:timezone/timezone.dart' as tz;
+import '../../main.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 class NotificationService {
-  final notificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   bool _isInitialized = false;
 
-  bool get isInitialized => _isInitialized;
-
-  // INITIALIZE
   Future<void> initNotification() async {
-    if (_isInitialized) return; // Prevent re-initialization
+    if (_isInitialized) return;
 
-    // init timezone handling
-    tz.initializeTimeZones();
-    final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+    try {
+      // Initialize timezone data
+      tz.initializeTimeZones();
 
-    // init android
-    const AndroidInitializationSettings initSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+      // Get the device's local timezone
+      final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
+      if (tz.timeZoneDatabase.locations.containsKey(currentTimeZone)) {
+        tz.setLocalLocation(tz.getLocation(currentTimeZone));
+      } else {
+        tz.setLocalLocation(tz.getLocation('UTC'));
+        print("Fallback to UTC timezone");
+      }
 
-    // init ios
-    const DarwinInitializationSettings initSettingsIOS =
-        DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
+      // Android initialization settings
+      const AndroidInitializationSettings initializationSettingsAndroid =
+          AndroidInitializationSettings('@drawable/ic_launcher');
 
-    // init settings
-    const InitializationSettings initSettings = InitializationSettings(
-      android: initSettingsAndroid,
-      iOS: initSettingsIOS,
-    );
+      // iOS initialization settings
+      const DarwinInitializationSettings initializationSettingsDarwin =
+          DarwinInitializationSettings();
 
-    // init
-    await notificationsPlugin.initialize(initSettings);
+      // General initialization settings
+      const InitializationSettings initializationSettings =
+          InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsDarwin,
+      );
 
-    _isInitialized = true;
+      // Initialize the plugin
+      await flutterLocalNotificationsPlugin.initialize(
+        initializationSettings,
+        onDidReceiveNotificationResponse: (NotificationResponse response) {
+          if (response.payload != null) {
+            navigatorKey.currentState?.popUntil((route) => route.isFirst);
+            navigatorKey.currentState?.pushNamed(
+              '/notification_screen',
+              arguments: response.payload,
+            );
+          }
+        },
+      );
+
+      _isInitialized = true;
+    } catch (e) {
+      print("Error initializing notification service: $e");
+    }
   }
 
-  // NOTI DETAILS SETUP
-  NotificationDetails notificationDetails() {
-    return const NotificationDetails(
-      android: AndroidNotificationDetails(
-        'daily_channel_id',
-        'Daily Notifications',
-        channelDescription: 'Daily notification channel',
-        importance: Importance.max,
-        priority: Priority.high,
-      ),
+  Future<void> showNotification(String noteText) async {
+    if (!_isInitialized) {
+      await initNotification();
+    }
+
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      'channel_id',
+      'Channel Name',
+      channelDescription: 'Channel Description',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidDetails,
       iOS: DarwinNotificationDetails(),
     );
-  }
 
-  // Show an immediate notification
-  Future<void> showNotification(
-    String note, {
-    int id = 0,
-    String? title,
-    String? body,
-    String? payload,
-  }) async {
-    return notificationsPlugin.show(
-      id,
-      title,
-      body,
-      notificationDetails(),
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      'Запомни',
+      'А то забудешь',
+      notificationDetails,
+      payload: noteText,
     );
   }
-
-  /*
-
-  Schedule a notification at a specified time (e.g. 11pm)
-
-  - hour (0-23)
-  - minutes (0-59)
-
-  */
 
   Future<void> scheduleNotification({
     int id = 1,
@@ -89,33 +96,41 @@ class NotificationService {
     required int hour,
     required int minute,
   }) async {
-    // Get the current date/time in device's local timezone
-    final now = tz.TZDateTime.now(tz.local);
+    if (!_isInitialized) {
+      await initNotification();
+    }
 
-    // Create a date/time for today at the specified hour/min
+    final now = tz.TZDateTime.now(tz.local);
     var scheduledDate =
         tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
 
-    // Schedule the notification
-    await notificationsPlugin.zonedSchedule(
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
       id,
       title,
       body,
       scheduledDate,
-      const NotificationDetails(),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'daily_channel_id',
+          'Daily Notifications',
+          channelDescription: 'Daily notification channel',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+        iOS: DarwinNotificationDetails(),
+      ),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
-
-      // Android specific: Allow notification while device is in low-power mode
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-
-      // Make notification repeat DAILY at same time
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }
 
-  // Cancel all notifications
   Future<void> cancelAllNotifications() async {
-    await notificationsPlugin.cancelAll();
+    await flutterLocalNotificationsPlugin.cancelAll();
   }
 }
