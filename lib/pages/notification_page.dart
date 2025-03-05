@@ -30,7 +30,7 @@ class NotificationPage extends StatelessWidget {
                 sendTime = DateTime.now();
                 print('Время отправки: $sendTime');
                 await NotificationService().scheduleNotification(
-                    title: "title", body: 'body', hour: 16, minute: 43);
+                    title: "title", body: 'body', hour: 16, minute: 52);
               },
               child: const Text("Повторил(-а)"),
             ),

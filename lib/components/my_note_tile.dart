@@ -65,8 +65,12 @@ class _MyNoteTileState extends State<MyNoteTile> {
                   // closing dialog
                   Navigator.pop(context);
                   // sending noteText
-                  await widget.notificationService
-                      .showNotification(widget.note.note);
+                  await NotificationService().scheduleNotification(
+                      id: 1,
+                      title: "title",
+                      body: 'body',
+                      hour: 16,
+                      minute: 55);
                   // await widget.notificationService
                   //     .showNotification(widget.note.note);
                 },
