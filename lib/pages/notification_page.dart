@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:netbrains/models/note.dart';
-
 import '../services/notification/notification_service.dart';
 
 class NotificationPage extends StatelessWidget {
@@ -29,8 +28,9 @@ class NotificationPage extends StatelessWidget {
                 // time tracking
                 sendTime = DateTime.now();
                 print('Время отправки: $sendTime');
+                //await NotificationService().showNotification(note.note);
                 await NotificationService().scheduleNotification(
-                    title: "title", body: 'body', hour: 16, minute: 52);
+                    title: 'title', body: 'body', delayInSeconds: 3);
               },
               child: const Text("Повторил(-а)"),
             ),
