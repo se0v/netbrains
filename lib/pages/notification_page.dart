@@ -28,9 +28,11 @@ class NotificationPage extends StatelessWidget {
                 // time tracking
                 sendTime = DateTime.now();
                 print('Время отправки: $sendTime');
-                //await NotificationService().showNotification(note.note);
                 await NotificationService().scheduleNotification(
-                    title: 'title', body: 'body', delayInSeconds: 3);
+                    id: 1,
+                    title: 'Закрепи',
+                    body: note.note,
+                    noteText: note.note);
               },
               child: const Text("Повторил(-а)"),
             ),
