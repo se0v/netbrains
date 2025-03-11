@@ -90,31 +90,28 @@ class NotificationService {
 
     final now = tz.TZDateTime.now(tz.local);
 
-    // ✅ Список задержек по Эббингаузу (0 → 3 → 5 → 7 секунд)
-    final List<int> delays = [1, 10, 15];
+    final List<int> delays = [1, 3, 5];
 
-    // ✅ Получаем текущий шаг из SharedPreferences
+    // get current step from SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int currentStep = prefs.getInt('ebbinghaus_step') ?? 0;
 
-    // ✅ Если шаги закончились, сбрасываем на 0
     if (currentStep >= delays.length) {
       currentStep = 0;
     }
 
-    final int delay = delays[currentStep]; // Берём текущую задержку
+    final int delay = delays[currentStep];
     final scheduledDate = now.add(Duration(seconds: delay));
 
-    // ✅ Проверяем, чтобы дата была в будущем
+    // check future date
     final safeScheduledDate = scheduledDate.isBefore(now)
         ? now.add(const Duration(seconds: 1))
         : scheduledDate;
 
-    final notificationId =
-        id + currentStep; // ✅ Уникальный ID для каждого уведомления
+    final notificationId = id + currentStep; // uid noti
 
     print(
-        "📆 Шаг ${currentStep + 1}: Уведомление запланировано через $delay секунд на $safeScheduledDate");
+        "Шаг ${currentStep + 1}: Уведомление запланировано через $delay секунд на $safeScheduledDate");
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       notificationId,
@@ -125,7 +122,7 @@ class NotificationService {
         android: AndroidNotificationDetails(
           'delayed_channel_id',
           'Delayed Notifications',
-          channelDescription: 'Уведомления по методу Эббингауза',
+          channelDescription: 'EbbiNoti',
           importance: Importance.max,
           priority: Priority.high,
         ),
@@ -137,8 +134,21 @@ class NotificationService {
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
 
-    // ✅ Увеличиваем шаг для следующего вызова
+    // inc step for next call
     await prefs.setInt('ebbinghaus_step', currentStep + 1);
+  }
+
+  // Cancel only the last scheduled notification
+  Future<void> cancelNotification() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? lastNotificationId = prefs.getInt('last_notification_id');
+
+    if (lastNotificationId != null) {
+      await flutterLocalNotificationsPlugin.cancel(lastNotificationId);
+      print("Canceled notification with ID: $lastNotificationId");
+    } else {
+      print("No notification to cancel.");
+    }
   }
 
   Future<void> cancelAllNotifications() async {

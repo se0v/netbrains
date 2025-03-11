@@ -36,6 +36,12 @@ class NotificationPage extends StatelessWidget {
               },
               child: const Text("Повторил(-а)"),
             ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  NotificationService().cancelNotification();
+                },
+                child: const Text("Прекратить повторения"))
           ],
         ),
       ),
