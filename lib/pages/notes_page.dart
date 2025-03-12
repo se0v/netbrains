@@ -5,18 +5,19 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../components/my_drawer.dart';
+import '../helper/navigate_pages.dart';
 import '../models/note.dart';
 import '../services/database/database_provider.dart';
 import '../services/notification/notification_service.dart';
 
-class NotePage extends StatefulWidget {
-  const NotePage({super.key});
+class NotesPage extends StatefulWidget {
+  const NotesPage({super.key, required String uid});
 
   @override
-  State<NotePage> createState() => _NotePageState();
+  State<NotesPage> createState() => _NotesPageState();
 }
 
-class _NotePageState extends State<NotePage> {
+class _NotesPageState extends State<NotesPage> {
   // provider
   late final listeningProvider = Provider.of<DatabaseProvider>(context);
   late final databaseProvider =
@@ -67,7 +68,7 @@ class _NotePageState extends State<NotePage> {
               final note = notes[index];
               return MyNoteTile(
                 note: note,
-                onNoteTap: () {},
+                onNoteTap: () => goNotesPage(context, note),
                 notificationService: _notificationService,
               );
             },
@@ -85,7 +86,7 @@ class _NotePageState extends State<NotePage> {
           keyboardType: TextInputType.multiline,
           maxLines: null,
           decoration: const InputDecoration(
-            hintText: "Введите заметку (ссылки определяются автоматически)",
+            hintText: "Разместите текст/изображение/ссылку",
           ),
         ),
         actions: [
@@ -103,7 +104,7 @@ class _NotePageState extends State<NotePage> {
     );
   }
 
-  /// Показывает диалог с обработанными ссылками
+  /// show dialog with ready links
   void _showNoteWithLinks(String noteText) {
     showDialog(
       context: context,
@@ -122,10 +123,10 @@ class _NotePageState extends State<NotePage> {
     );
   }
 
-  /// Парсит текст, определяя ссылки и превращая их в кликабельные `TextSpan`
+  // parsing text for detect to link
   TextSpan _parseTextWithLinks(String text) {
     final RegExp linkRegex = RegExp(
-      r'(https?:\/\/[^\s]+)', // Регулярное выражение для поиска ссылок
+      r'(https?:\/\/[^\s]+)', // regular exp for search link
       caseSensitive: false,
     );
 
@@ -159,7 +160,7 @@ class _NotePageState extends State<NotePage> {
         style: const TextStyle(color: Colors.black), children: spans);
   }
 
-  /// Открывает URL в браузере
+  /// to browser
   void _openUrl(String url) async {
     final Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:netbrains/models/note.dart';
-import 'package:netbrains/pages/note_page.dart';
+import 'package:netbrains/pages/notes_page.dart';
 import 'package:netbrains/pages/notification_page.dart';
 import 'package:netbrains/pages/profile_page.dart';
 
@@ -30,10 +30,14 @@ void goPostPage(BuildContext context, Post post) {
 }
 
 // go to note page
-void goNotePage(BuildContext context, Note note) {
+void goNotesPage(BuildContext context, Note note) {
   // navigate to note page
   Navigator.push(
-      context, MaterialPageRoute(builder: (context) => const NotePage()));
+      context,
+      MaterialPageRoute(
+          builder: (context) => const NotesPage(
+                uid: '',
+              )));
 }
 
 // go to noti page
