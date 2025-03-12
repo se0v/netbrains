@@ -57,16 +57,6 @@ class _MyNoteTileState extends State<MyNoteTile> {
           return SafeArea(
               child: Wrap(
             children: [
-              // show button
-              ListTile(
-                leading: const Icon(Icons.extension),
-                title: const Text("Открыть"),
-                onTap: () async {
-                  // closing dialog
-                  Navigator.pop(context);
-                  // opening note
-                },
-              ),
               // remember button
               ListTile(
                 leading: const Icon(Icons.extension),
