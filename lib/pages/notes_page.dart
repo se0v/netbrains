@@ -77,25 +77,27 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   void _openNoteDialog() {
-    TextEditingController _noteController = TextEditingController();
+    TextEditingController noteController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Добавить заметку"),
         content: TextField(
-          controller: _noteController,
+          controller: noteController,
           keyboardType: TextInputType.multiline,
           maxLines: null,
           decoration: const InputDecoration(
-            hintText: "Разместите текст/изображение/ссылку",
+            hintText:
+                "Введите текст заметки (URL изображения можно добавить в тексте)",
           ),
         ),
         actions: [
           TextButton(
             onPressed: () async {
-              String noteText = _noteController.text;
-              Navigator.pop(context);
+              String noteText = noteController.text.trim();
               await databaseProvider.createNote(noteText);
+              Navigator.pop(context);
             },
             child: const Text("Сохранить"),
           ),

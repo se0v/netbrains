@@ -10,23 +10,54 @@ class NotePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String? imageUrl =
+        _extractImageUrl(note.note); // Ищем URL картинки в тексте
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Просмотр заметки"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SelectableText.rich(
-          _parseTextWithLinks(note.note),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Текст заметки с кликабельными ссылками
+            SelectableText.rich(
+              _parseTextWithLinks(note.note),
+            ),
+            const SizedBox(height: 16),
+
+            // Отображение изображения, если найден URL
+            if (imageUrl != null)
+              Image.network(
+                imageUrl,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    const Text("Ошибка загрузки изображения"),
+              ),
+          ],
         ),
       ),
     );
   }
 
-  // parsing text + make links clickable
+  /// Извлекаем URL изображения из текста заметки
+  String? _extractImageUrl(String text) {
+    final RegExp imageRegex = RegExp(
+      r'https?:\/\/.*\.(?:png|jpg|jpeg|gif)', // Поиск ссылок на изображения
+      caseSensitive: false,
+    );
+
+    final match = imageRegex.firstMatch(text);
+    return match?.group(0); // Возвращаем найденный URL
+  }
+
+  /// Разбираем текст и делаем ссылки кликабельными
   TextSpan _parseTextWithLinks(String text) {
     final RegExp linkRegex = RegExp(
-      r'(https?:\/\/[^\s]+)', // search links
+      r'(https?:\/\/[^\s]+)', // Регулярное выражение для поиска ссылок
       caseSensitive: false,
     );
 
@@ -60,7 +91,7 @@ class NotePage extends StatelessWidget {
         style: const TextStyle(color: Colors.white), children: spans);
   }
 
-  // opening link in browser
+  // Открываем ссылку в браузере
   void _openUrl(String url) async {
     final Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
