@@ -78,6 +78,15 @@ class NotificationService {
     );
   }
 
+  Future<int> getCurrentStep() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('ebbinghaus_step') ?? 0;
+  }
+
+  int getTotalSteps() {
+    return [1, 3, 5].length;
+  }
+
   Future<void> scheduleNotification({
     int id = 1,
     required String title,
