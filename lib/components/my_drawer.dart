@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:netbrains/components/my_drawer_tile.dart';
 import 'package:netbrains/pages/home_page.dart';
 import 'package:netbrains/pages/news_page.dart';
+import 'package:netbrains/pages/notes_page.dart';
 import 'package:netbrains/pages/profile_page.dart';
 import 'package:netbrains/pages/schedule_page.dart';
 import 'package:netbrains/services/auth/auth_gate.dart';
 import 'package:netbrains/services/auth/auth_service.dart';
-import '../pages/ebbi_page.dart';
 import '../pages/settings_page.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -85,7 +85,7 @@ class MyDrawer extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              EbbiPage(uid: _auth.getCurrentUid())));
+                              NotesPage(uid: _auth.getCurrentUid())));
                 }),
 
             // news list tile

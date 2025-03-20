@@ -8,6 +8,7 @@ NOTE TILE
 */
 
 import 'package:flutter/material.dart';
+import 'package:netbrains/components/my_progress_widget.dart';
 import 'package:netbrains/services/database/database_provider.dart';
 import 'package:netbrains/services/notification/notification_service.dart';
 import 'package:provider/provider.dart';
@@ -57,6 +58,71 @@ class _MyNoteTileState extends State<MyNoteTile> {
           return SafeArea(
               child: Wrap(
             children: [
+              // stat button
+              ListTile(
+                leading: const Icon(Icons.question_mark),
+                title: const Text("Статистика повторений"),
+                onTap: () async {
+                  Navigator.pop(context);
+
+                  // get steps from NotificationService
+                  final notificationService = NotificationService();
+                  int currentStep = await notificationService.getCurrentStep();
+                  int totalSteps = notificationService.getTotalSteps();
+
+                  // dialog with graph
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text(
+                        "Статистика повторений",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w600),
+                      ),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          MyProgressWidget(
+                            currentStep: currentStep,
+                            totalSteps: totalSteps,
+                          ),
+                          Text(
+                            "\nСледующее повторение: через ${currentStep + 1} дня",
+                            style: const TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.bold),
+                          ),
+                          const Text(
+                            "\nИнтервальные повторения помогают лучше запоминать информацию. Вместо заучивания за один раз, материал повторяется через увеличивающиеся промежутки времени.\n"
+                            "Например:\n"
+                            " - через 20 минут,\n"
+                            " - через час,\n"
+                            " - через 9 часов,\n"
+                            " - на следующий день,\n"
+                            " - через 2 дня,\n"
+                            " - через 6 дней,\n"
+                            " - через 2 недели,\n"
+                            " - через месяц,\n"
+                            " - через 2 месяца,\n"
+                            " - через полгода.\n"
+                            "Это снижает забывание и укрепляет знания в долгосрочной памяти.",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text("Закрыть"),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+
               // remember button
               ListTile(
                 leading: const Icon(Icons.extension),
@@ -65,14 +131,8 @@ class _MyNoteTileState extends State<MyNoteTile> {
                   // closing dialog
                   Navigator.pop(context);
                   // sending noteText
-                  await NotificationService().scheduleNotification(
-                      id: 1,
-                      title: "title",
-                      body: 'body',
-                      hour: 16,
-                      minute: 55);
-                  // await widget.notificationService
-                  //     .showNotification(widget.note.note);
+                  await widget.notificationService
+                      .showNotification(widget.note.note);
                 },
               ),
 
